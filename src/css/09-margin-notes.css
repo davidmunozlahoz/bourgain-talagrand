@@ -1,0 +1,104 @@
+/* Footnotes and historical notes (\marginhistory). On wide screens both sit in the
+right margin, level with the text they belong to (Tufte-style sidenotes), and so do the
+figure captions; on narrow screens the footnotes are listed at the end of the paper. */
+
+/* ---------------------------------------------------------------- footnotes */
+sup.fnref { line-height: 0; font-size: 0.75em; }
+sup.fnref a { color: var(--ref); padding: 0 0.1em; }
+
+.footnotes { margin-top: 3rem; }
+.footnotes::before {
+  content: "";
+  display: block;
+  width: 8rem;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 0.8rem;
+}
+.footnotes ol { list-style: none; margin: 0; padding: 0; }
+.footnotes li { position: relative; padding-left: 1.6em; }
+.fn-label { position: absolute; left: 0; }
+.fnback { color: var(--ref); }
+
+/* margin notes, a la Tufte: on wide screens the footnote sits in the right margin,
+   level with its reference, and the list at the end is hidden */
+.sidenote { display: none; }
+@media (min-width: 1380px) {
+  .sidenote {
+    display: block;
+    float: right;
+    clear: right;
+    position: relative;
+    width: var(--margin);
+    margin-right: calc(-1 * (var(--margin) + var(--margin-gap)));
+    margin-top: 0.15rem;
+    font-style: normal;
+    text-align: left;
+    text-indent: 0;
+    hyphens: manual;
+    -webkit-hyphens: manual;
+  }
+  .sidenote .fn-label { position: static; margin-right: 0.15em; }
+  .footnotes { display: none; }
+  sup.fnref a { pointer-events: none; }
+}
+
+/* ---------------------------------------------------------------- historical notes */
+/* \marginhistory: portraits (round, as on the title screen) above a short note in Charter.
+   On wide screens it sits in the right margin, level with what follows it, like the footnotes;
+   otherwise it is a small aside in the text, portraits beside the note */
+/* all the text in the margin (historical notes, footnotes, figure captions) looks the same,
+   in Charter, smaller and grey, and so do the footnotes and captions on narrow screens */
+.margin-history, .sidenote, .footnotes, .applet figcaption {
+  font-family: "Charter", "NewCM10", Georgia, serif;
+  font-size: 0.78rem;
+  line-height: 1.38;
+  color: var(--muted);
+}
+.mh-portraits { --size: 5.5rem; display: flex; justify-content: center; gap: 0.7rem; }
+.mh-portraits figure { flex: none; width: var(--size); margin: 0; text-align: center; }
+.mh-portraits img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: grayscale(1);
+}
+:root[data-theme="dark"] .mh-portraits img { filter: grayscale(1) brightness(0.9) contrast(0.95); }
+.mh-portraits figcaption {
+  margin: 0.3em -1.5em 0;  /* a name wider than its portrait stays centered under it */
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.paper .margin-history p {
+  margin-top: 0.6em;
+  text-align: left;
+  text-indent: 0;
+  hyphens: manual;
+  -webkit-hyphens: manual;
+  overflow: visible;
+}
+@media (min-width: 1380px) {
+  .margin-history {
+    float: right;
+    clear: right;
+    width: var(--margin);
+    margin-right: calc(-1 * (var(--margin) + var(--margin-gap)));
+    margin-top: 0.2rem;
+  }
+}
+@media (max-width: 1379px) {
+  .margin-history {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 30rem;
+    margin: 1.1em auto;
+  }
+  .mh-portraits { --size: 4.4rem; flex: none; }
+  .paper .margin-history p { margin-top: 0; }
+}
+@media (max-width: 480px) {
+  .mh-portraits { --size: 3.5rem; gap: 0.5rem; }
+}

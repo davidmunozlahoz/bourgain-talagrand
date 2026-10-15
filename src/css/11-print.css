@@ -1,0 +1,14 @@
+/* Print: a single column and no chrome. */
+
+@media print {
+  .toc, .theme-toggle, .scroll-cue, .landing-art { display: none; }
+  .landing { min-height: 0; padding: 1rem 0; }
+  .js .landing-stage { height: auto; }
+  .js .landing-stage > .landing { position: static; height: auto; }
+  .js .landing-text { position: static; transform: none !important; opacity: 1 !important; width: auto !important; }
+  .js .landing .disclaimer { margin-top: 2rem; }
+  .paper { padding: 0; max-width: none; }
+  body { background: #fff; color: #000; }
+  a { color: inherit; }
+  .note { break-inside: avoid; }
+}

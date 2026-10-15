@@ -1,0 +1,19 @@
+/* Adjustments to KaTeX's own stylesheet (katex.css, which index.html links before these files). */
+
+/* until src/js/math.js has typeset their formulas, the title screen and the paper are hidden
+   rather than shown as TeX */
+.js:not(.math-title) .title-block,
+.js:not(.math-ready) main > :not(.title-block) { visibility: hidden; }
+
+/* text and math are both Computer Modern, so math uses the text size (KaTeX default: 1.21em) */
+.katex { font-size: 1em; text-rendering: auto; }
+/* words inside formulas (\text{...}) use the body font, as in LaTeX */
+.katex .text { font-family: "NewCM10", KaTeX_Main, serif; }
+.katex-display {
+  margin: 0.45em 0;
+  padding: 0.1em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.katex-display > .katex { white-space: nowrap; }
+.eq-anchor:target + .katex-display { background: var(--target); }

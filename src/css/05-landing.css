@@ -1,0 +1,179 @@
+/* The title screen: the faint composition of portraits, formulas and drawings around the
+title (the markup is in index.html); the title itself; the disclaimer on the second screen; and
+the scrolling "stage" that cross-fades the two (driven by src/js/site.js). */
+
+/* the title alone on the first screen; the disclaimer on the second; then the paper */
+.title-block { text-align: center; }
+.landing {
+  position: relative;
+  /* full-bleed: the landing screens span the whole window, whatever the column layout */
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 3rem 0;
+}
+.title-block p { text-align: center; margin: 0; }
+
+/* the composition behind the title: portraits, formulas and drawings, faint and around it.
+   Everything is sized in em of .landing-art, which scales with the window (by its width or
+   its height, whichever is tighter), so the composition keeps its proportions; the title
+   keeps a clear zone around the middle */
+.landing-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--muted);
+  font-size: min(1.4vw, 2.2vh);
+}
+.landing-text { position: relative; z-index: 1; }
+.landing .scroll-cue { z-index: 1; }  /* stays absolutely positioned at the bottom of the screen */
+.art {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  margin: 0;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: art-in 1.6s ease-out forwards;
+  animation-delay: calc(0.25s + var(--i) * 0.12s);
+}
+@keyframes art-in { to { opacity: var(--o, 1); } }
+.art-portrait { --o: 0.5; width: 6.6em; text-align: center; }
+.art-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: grayscale(1);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.art-portrait figcaption {
+  margin-top: 0.4em;
+  font-size: 0.72em;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.art-formula { --o: 0.6; font-size: var(--size, 1em); white-space: nowrap; }
+.art-drawing { --o: 0.45; }
+.art-drawing svg { display: block; width: 100%; height: auto; overflow: visible; }
+:root[data-theme="dark"] .art-portrait { --o: 0.38; }
+:root[data-theme="dark"] .art-portrait img { filter: grayscale(1) brightness(0.9) contrast(0.95); }
+/* phones, tablets and tall windows: only the portraits and two formulas, above and below */
+@media (max-width: 1000px), (max-aspect-ratio: 1/1) {
+  .landing-art { font-size: 15px; }
+  .art { left: var(--mx); top: var(--my); }
+  .art[data-phone="hide"] { display: none; }
+  .art-portrait { width: 4.6em; }
+  .art-formula { font-size: 1em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .art { animation: none; opacity: var(--o, 1); }
+}
+
+/* amsart: title in bold capitals (here in Charter), larger on its own screen */
+.title-block h1 {
+  font-family: "Charter", "NewCM10", Georgia, serif;
+  font-size: clamp(1.45rem, 1.2rem + 1.6vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.27;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 auto;
+  max-width: min(34rem, 56vw);  /* leaves room for the composition at the sides */
+  text-wrap: balance;
+}
+@media (max-width: 1000px), (max-aspect-ratio: 1/1) {
+  .title-block h1 { max-width: 34rem; }
+}
+.scroll-cue {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--muted);
+  transform: translateX(-50%);
+  animation: cue 2.4s ease-in-out infinite;
+}
+.scroll-cue:hover { color: var(--fg); text-decoration: none; }
+.scroll-cue svg { width: 1.6rem; height: 1.6rem; }
+@keyframes cue {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 0.4rem); }
+}
+
+/* web-only note on the second screen, in Charter italic; \emph turns upright as in LaTeX */
+.disclaimer {
+  font-family: "Charter", "NewCM10", Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  max-width: 31rem;
+  margin: 0 auto;
+}
+.disclaimer p { text-wrap: balance; hyphens: manual; -webkit-hyphens: manual; }
+.disclaimer em { font-style: normal; }
+.disclaimer .paper-ref { margin: 0.9em 0 !important; }
+.disclaimer .contact {
+  margin-top: 0.9em;
+  font-family: "NewCMMono10", ui-monospace, monospace;
+  font-style: normal;
+  font-size: 0.9em;
+}
+.disclaimer .nowrap { white-space: nowrap; }
+
+/* The stage: without JavaScript, the title and then the note, one below the other. With it,
+   the stage is 2.5 screens tall and its screen stays pinned while the title fades out and the
+   note fades into its place (--stage-title and --stage-note, from 0 to 1, are set by
+   src/js/site.js) */
+.landing .disclaimer { margin-top: 3rem; }
+.cue-note { display: none; }
+.js .landing-stage { position: relative; height: 250vh; height: 250svh; }
+.js .landing-stage > .landing {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 0;
+  padding: 0;
+}
+.js .landing-text { position: absolute; left: 50%; top: 50%; margin: 0; }
+.js .landing h1.landing-text {
+  width: min(34rem, 56vw);
+  max-width: none;
+  opacity: var(--stage-title, 1);
+  transform: translate(-50%, calc(-50% - (1 - var(--stage-title, 1)) * 2.5rem));
+}
+.js .landing .disclaimer {
+  width: min(31rem, calc(100vw - 2.5rem));
+  opacity: var(--stage-note, 0);
+  transform: translate(-50%, calc(-50% + (1 - var(--stage-note, 0)) * 2rem));
+}
+.js .landing-stage:not(.note-on) .disclaimer { pointer-events: none; }
+.js .cue-note { display: grid; }
+.scroll-cue { transition: opacity 0.3s; }
+.js .landing-stage:not(.note-on) .cue-note,
+.js .landing-stage.note-on .cue-title { opacity: 0; pointer-events: none; }
+.stage-anchor { display: block; scroll-margin-top: 0; }
+.js .stage-anchor { position: absolute; top: 105vh; top: 105svh; }  /* where the note is fully shown */
+@media (max-width: 1000px), (max-aspect-ratio: 1/1) {
+  .js .landing h1.landing-text { width: min(34rem, calc(100vw - 2.5rem)); }
+  /* the two formulas sit close to the middle on phones: they leave with the title */
+  .js .art-formula .katex { opacity: var(--stage-title, 1); }
+}
+@media (max-width: 600px) {
+  .landing .disclaimer { font-size: 0.95rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .landing h1.landing-text, .js .landing .disclaimer { transform: translate(-50%, -50%); }
+}

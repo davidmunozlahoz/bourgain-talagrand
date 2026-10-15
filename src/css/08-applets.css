@@ -1,0 +1,98 @@
+/* The interactive figures (markup in index.html, scripts in src/js/): canvases, shape
+buttons, sliders, readouts, and the caption, which is a margin note on wide screens. */
+
+.applet { margin: 1.4em 0 1.3em; }
+.applet-views {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+.applet canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  touch-action: none;
+}
+.applet canvas.applet-stage { aspect-ratio: 16 / 10; cursor: crosshair; }
+.applet canvas.applet-stage.is-3d { cursor: grab; }
+.applet canvas.applet-stage.is-3d:active { cursor: grabbing; }
+.applet-2d { cursor: pointer; }
+.applet-tree, .applet-plane { cursor: pointer; }
+.applet-levels { font-variant: small-caps; letter-spacing: 0.04em; }
+/* variables in readouts written at run time, in the math font */
+.applet .mi { font-family: KaTeX_Math, serif; font-style: italic; }
+.applet-readout sub { font-size: 0.7em; line-height: 0; }
+.applet-readout[data-out="combination"] { display: block; }
+.applet-2d.is-drawing { cursor: crosshair; }
+.applet-3d { cursor: grab; }
+.applet-3d:active { cursor: grabbing; }
+.applet canvas:focus-visible { outline: 2px solid var(--ref); outline-offset: 2px; }
+.applet-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1.2rem;
+  margin-top: 0.55rem;
+  font-size: 0.9rem;
+}
+.applet-shapes { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; }
+.applet-shapes button {
+  font: inherit;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+.applet-shapes button:hover { color: var(--fg); }
+.applet-shapes button[aria-pressed="true"] {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.applet-shapes button:focus-visible { outline: 2px solid var(--ref); outline-offset: 2px; }
+.applet-alpha { display: inline-flex; align-items: center; gap: 0.5rem; }
+.applet-alpha input { width: 9rem; accent-color: var(--fg); }
+.applet-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.4rem;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+}
+.applet figcaption {
+  margin-top: 0.7rem;
+  text-align: left;
+}
+.fig-name { font-variant: small-caps; letter-spacing: 0.03em; }
+@media (max-width: 560px) {
+  .applet-views { grid-template-columns: 1fr; }
+  .applet-shapes { gap: 0.15rem 0.7rem; font-size: 0.85rem; }
+}
+/* wide screens: the caption becomes a margin note beside the figure, like the footnotes */
+@media (min-width: 1380px) {
+  .applet { position: relative; }
+  .applet figcaption {
+    position: absolute;
+    /* raise the first line so the top of its capitals meets the top edge of the figure:
+       half-leading plus ascent minus cap height, from Charter's metrics; 0.38em with its
+       hhea ascent/descent (0.963/0.236), 0.32em with its typo ones (0.8/0.2), which some
+       browsers use instead; cap height 0.671 */
+    top: -0.35em;
+    left: calc(100% + var(--margin-gap));
+    width: var(--margin);
+    margin: 0;
+    text-align: left;
+    hyphens: manual;
+    -webkit-hyphens: manual;
+  }
+  .applet .fig-name { display: none; }
+}
+@media print {
+  .applet-controls, .applet-readout { display: none; }
+}

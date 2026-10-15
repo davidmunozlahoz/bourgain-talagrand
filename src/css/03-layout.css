@@ -1,0 +1,139 @@
+/* Page layout. A single text column by default; from 1380px, a three-column grid
+(contents | text | margin notes) with the sticky table of contents on the left and the
+reading-progress bar under it (driven by src/js/site.js). */
+
+/* ---------------------------------------------------------------- layout */
+.paper {
+  max-width: calc(var(--measure) + 32px);
+  margin: 0 auto;
+  padding: 0 16px 4rem;
+}
+
+.paper p {
+  margin: 0;
+  text-align: justify;
+  text-wrap: pretty;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 899px) {
+  .paper p { text-align: left; }
+  /* a formula that still cannot fit scrolls inside its paragraph, not the page */
+  .paper p { overflow-x: auto; overflow-y: hidden; }
+}
+
+/* paragraphs are separated by an indent, as in LaTeX (\parindent = 12pt), not by a gap */
+/* LaTeX also indents the paragraph that follows a theorem or a proof */
+.paper p + p, .thm + p, .proof + p { text-indent: 1.1em; }
+.paper .title-block p { text-indent: 0; }  /* centered blocks are never indented */
+
+/* ---------------------------------------------------------------- contents */
+.toc {
+  font-size: 0.95rem;
+  line-height: 1.27;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { margin: 0.35rem 0; }
+.toc a { color: var(--fg); display: block; padding-left: 1.4em; text-indent: -1.4em; }
+.toc a:hover { color: var(--ref); }
+.toc-num { display: inline-block; min-width: 1.4em; color: var(--muted); text-indent: 0; }
+
+/* wide screens: contents | text | margin notes.
+   14.5rem + 2.5rem + 34rem + 3rem + 13rem = 67rem = 1340px, plus the 16px gutters */
+@media (min-width: 1380px) {
+  .paper {
+    max-width: none;
+    display: grid;
+    grid-template-columns: var(--toc) var(--toc-gap) minmax(0, var(--measure)) var(--margin-gap) var(--margin);
+    justify-content: center;
+  }
+  .paper > * { grid-column: 3; }
+  .paper > .title-block { grid-column: 1 / -1; }
+  /* the contents start beside the first section and then stick to the top while scrolling */
+  .toc {
+    grid-column: 1;
+    grid-row: 2 / span 100;
+    align-self: start;
+    position: sticky;
+    top: 1.5rem;
+    margin-top: 2.5rem;  /* = .sec margin-top, so it lines up with the first heading */
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;  /* only scrolls if the window is too short for the whole list */
+    padding-bottom: 0.25rem;
+  }
+}
+@media (max-width: 1379px) {
+  .toc {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.9rem 0;
+    margin: 0 0 2.5rem;
+  }
+  .toc ol { columns: 2 14rem; column-gap: 2rem; }
+  .toc li { break-inside: avoid; }
+}
+
+/* reading progress, below the contents in the sidebar: a thin bordered bar that grows on
+   hover to show the percentage, and an eye that hides it */
+.reading-progress { display: none; }
+@media (min-width: 1380px) {
+  .reading-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 1.4rem;  /* holds the eye, and the bar grown on hover, without moving anything */
+    margin-top: 1.1rem;
+  }
+}
+.progress-eye {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.progress-eye:hover { color: var(--fg); }
+.progress-eye:focus-visible { outline: 2px solid var(--ref); outline-offset: 2px; }
+.progress-eye svg { width: 1.05rem; height: 1.05rem; }
+.progress-eye .icon-eye-off,
+.reading-progress.is-hidden .progress-eye .icon-eye { display: none; }
+.reading-progress.is-hidden .progress-eye .icon-eye-off { display: block; }
+.progress-bar {
+  position: relative;
+  flex: 1;
+  height: 0.45rem;
+  border: 1px solid var(--fg);
+  background: var(--bg);
+  transition: height 0.15s;
+}
+.reading-progress.is-hidden .progress-bar { visibility: hidden; }
+.progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--fg);
+}
+.progress-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: #fff;
+  mix-blend-mode: difference;  /* readable over both the filled and the empty part */
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.progress-bar:hover { height: 1.1rem; }
+.progress-bar:hover .progress-label { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar, .progress-label { transition: none; }
+}

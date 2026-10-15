@@ -1,0 +1,76 @@
+/* The body of the paper: section headings, theorem-like environments (the amsthm
+styles), proofs, lists and quotations. */
+
+/* ---------------------------------------------------------------- sections */
+.sec { margin-top: 2.5rem; }
+.sec h2 {
+  font-size: 1.12rem;
+  font-weight: 400;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin: 0 0 1.1rem;
+}
+.sec h2 a { color: inherit; }
+.sec h2 a:hover { text-decoration: none; color: var(--ref); }
+
+/* ---------------------------------------------------------------- theorems */
+.thm, .proof { margin: 0.8em 0; }
+.thm > p:last-child, .proof > p:last-child { margin-bottom: 0; }
+
+.thm-head { font-style: normal; }
+.thm-name { font-weight: 700; }
+.thm-note { font-weight: 400; }
+.thm-lean { font-style: normal; font-size: 0.85em; }
+
+/* amsthm "plain": bold head, italic body (\emph turns upright) */
+.thm-plain p, .thm-plain li { font-style: italic; }
+.thm-plain em { font-style: normal; }
+.thm-plain .thm-head, .thm-plain .enum-label, .thm-plain .cite { font-style: normal; }
+
+/* amsthm "remark": italic head, upright body */
+.thm-remark .thm-name { font-weight: 400; font-style: italic; }
+
+.thm:target {
+  background: var(--target);
+  box-shadow: 0 0 0 0.6rem var(--target);
+  border-radius: 2px;
+}
+
+.proof-head { font-style: italic; }
+.qed {
+  float: right;
+  margin-left: 1em;
+  font-style: normal;
+  font-size: 0.9em;
+}
+.qed-line { text-align: right; }
+
+/* ---------------------------------------------------------------- lists */
+ol.enum {
+  list-style: none;
+  margin: 0.5em 0 0.85em;
+  padding: 0;
+}
+ol.enum > li {
+  position: relative;
+  padding-left: 2.6em;
+  margin: 0.15em 0;
+}
+.enum-label {
+  position: absolute;
+  left: 0;
+  width: 2.1em;
+  text-align: right;
+  font-style: normal;
+}
+ol.enum > li > p { margin: 0; }
+ol.enum > li > p:last-child { margin-bottom: 0; }
+
+blockquote {
+  margin: 1em 2.2em;
+  font-size: 0.97em;
+}
+@media (max-width: 600px) {
+  blockquote { margin: 1em 1em; }
+}

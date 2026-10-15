@@ -1,0 +1,2168 @@
+<!doctype html>
+<!-- The expository notes, as one page. This file is the source: edit it directly.
+     Structure: the head (styles from src/css/: fonts, KaTeX, then the site's own files
+     01 to 11, in that order), the light/dark switch, then <main>: the title screen, the
+     contents, the sections of the paper, the footnotes, the references; and the scripts
+     (src/js/). The formulas are written in TeX, \( … \) inline and \[ … \] displayed;
+     src/js/math.js typesets them with KaTeX when the page loads (its macros are listed
+     there). In TeX, write < as &lt; so that it is not read as a tag. -->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In a Banach lattice, the Radon–Nikodým property and the Krein–Milman property are
+  equivalent</title>
+<meta name="description" content="Expository notes: In a Banach lattice, the Radon–Nikodým property and the Krein–Milman property are equivalent.">
+<meta name="author" content="David Muñoz-Lahoz">
+<link rel="stylesheet" href="src/css/fonts.css">
+<link rel="stylesheet" href="src/css/katex.css">
+<link rel="stylesheet" href="src/css/01-tokens.css">
+<link rel="stylesheet" href="src/css/02-base.css">
+<link rel="stylesheet" href="src/css/03-layout.css">
+<link rel="stylesheet" href="src/css/04-theme-toggle.css">
+<link rel="stylesheet" href="src/css/05-landing.css">
+<link rel="stylesheet" href="src/css/06-text.css">
+<link rel="stylesheet" href="src/css/07-math.css">
+<link rel="stylesheet" href="src/css/08-applets.css">
+<link rel="stylesheet" href="src/css/09-margin-notes.css">
+<link rel="stylesheet" href="src/css/10-references.css">
+<link rel="stylesheet" href="src/css/11-print.css">
+<script>
+/* Before anything is drawn: mark that JavaScript runs (the title screen's CSS depends on it)
+   and apply the theme chosen on an earlier visit, so that it does not flash */
+document.documentElement.classList.add('js');
+try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+/* the page stays hidden until math.js has typeset the formulas and shows it; this is the
+   fallback in case math.js does not run at all */
+document.addEventListener('DOMContentLoaded', function () {
+  var root = document.documentElement;
+  if (!root.classList.contains('math-title')) root.classList.add('math-title', 'math-ready');
+});
+</script>
+<script src="src/js/katex.min.js" defer></script>
+<script src="src/js/math.js" defer></script>
+</head>
+<body>
+<!-- the light/dark switch, top right (src/css/04-theme-toggle.css; src/js/site.js flips it) -->
+<button class="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+</button>
+<!-- the paper: title screen, contents, sections, footnotes, references -->
+<main class="paper">
+<!-- The title screen (src/css/05-landing.css). Behind the title, a faint composition of
+     portraits, formulas and line drawings. Each item is placed by its centre, in percentages
+     of the screen: --x/--y on wide screens, --mx/--my on phones (items without them get
+     data-phone="hide"); --i staggers the fade-in. The second screen holds the disclaimer;
+     src/js/site.js cross-fades the two while the stage scrolls past. -->
+<header class="title-block">
+  <div class="landing-stage">
+    <section class="landing">
+      <div class="landing-art" aria-hidden="true">
+        <!-- portraits (assets/portraits/; the credits are in the last paragraph of the page) -->
+        <figure class="art art-portrait" style="--x:9%;--y:17%;--mx:17%;--my:12%;--i:0">
+          <img src="assets/portraits/radon.jpg" alt="" width="320" height="320" decoding="async">
+          <figcaption>Radon</figcaption>
+        </figure>
+        <figure class="art art-portrait" style="--x:12%;--y:81%;--mx:15%;--my:84%;--i:1">
+          <img src="assets/portraits/nikodym-banach.jpg" alt="" width="320" height="320" decoding="async">
+          <figcaption>Nikodým &amp; Banach</figcaption>
+        </figure>
+        <figure class="art art-portrait" style="--x:90%;--y:16%;--mx:78%;--my:14%;--i:2">
+          <img src="assets/portraits/krein.jpg" alt="" width="320" height="320" decoding="async">
+          <figcaption>Krein</figcaption>
+        </figure>
+        <figure class="art art-portrait" style="--x:75%;--y:83%;--mx:50%;--my:83%;--i:3">
+          <img src="assets/portraits/bourgain.jpg" alt="" width="320" height="320" decoding="async">
+          <figcaption>Bourgain</figcaption>
+        </figure>
+        <figure class="art art-portrait" style="--x:91%;--y:82%;--mx:85%;--my:84%;--i:4">
+          <img src="assets/portraits/talagrand.jpg" alt="" width="320" height="320" decoding="async">
+          <figcaption>Talagrand</figcaption>
+        </figure>
+        <!-- formulas; --size scales each one -->
+        <div class="art art-formula" style="--x:14%;--y:40%;--mx:50%;--my:27%;--i:2;--size:1.25em">\(F(A) = \int_A f \, d\mu\)</div>
+        <div class="art art-formula" style="--x:86%;--y:37%;--mx:50%;--my:69%;--i:3;--size:1.15em">\(C = \overline{\mathrm{co}}\big(\operatorname{ext}(C)\big)\)</div>
+        <div class="art art-formula" style="--x:62%;--y:10%;--i:4;--size:1em" data-phone="hide">\(S(A, f, \alpha) = \{ x \in A : f(x) > M(A, f) - \alpha \}\)</div>
+        <div class="art art-formula" style="--x:30%;--y:93%;--i:5;--size:1.05em" data-phone="hide">\(\mathbb{E}(f_{n+1} \mid \Sigma_n) = f_n\)</div>
+        <div class="art art-formula" style="--x:57%;--y:80%;--i:6;--size:1em" data-phone="hide">\(x \notin \overline{\mathrm{co}}\big(A \setminus B(x, \varepsilon)\big)\)</div>
+        <div class="art art-formula" style="--x:87%;--y:64%;--i:7;--size:1.05em" data-phone="hide">\(|x| = x \vee (-x)\)</div>
+        <div class="art art-formula" style="--x:62%;--y:93%;--i:8;--size:1em" data-phone="hide">\(\mathrm{RNP} \iff \mathrm{KMP}\)</div>
+        <div class="art art-formula" style="--x:31%;--y:10%;--i:9;--size:1.05em" data-phone="hide">\(x = \sum_{i=1}^n \lambda_i x_i, \quad \lambda_i \geq 0, \quad \sum_{i=1}^n \lambda_i = 1\)</div>
+        <!-- line drawings, inline SVG in the text colour -->
+        <div class="art art-drawing" style="--x:10%;--y:60%;--i:4;width:7.5em" data-phone="hide">
+          <!-- a convex set cut by a hyperplane: the cap above the line is a slice -->
+          <svg viewBox="0 0 130 100">
+            <defs>
+              <clipPath id="cap">
+                <rect x="0" y="0" width="130" height="34"/>
+              </clipPath>
+            </defs>
+            <g transform="rotate(-18 65 50)">
+              <ellipse cx="65" cy="52" rx="52" ry="34" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <ellipse cx="65" cy="52" rx="52" ry="34" fill="currentColor" fill-opacity="0.18" clip-path="url(#cap)"/>
+              <line x1="0" y1="18" x2="130" y2="18" stroke="currentColor" stroke-dasharray="4 3"/>
+              <line x1="0" y1="34" x2="130" y2="34" stroke="currentColor"/>
+            </g>
+          </svg>
+        </div>
+        <div class="art art-drawing" style="--x:91%;--y:51%;--i:5;width:6.2em" data-phone="hide">
+          <!-- a polygon, its extreme points (filled), and a point that is the midpoint of two others -->
+          <svg viewBox="0 0 120 110">
+            <polygon points="20,80 48,14 100,24 112,78 60,100" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1.2"/>
+            <g fill="currentColor">
+              <circle cx="20" cy="80" r="3.2"/>
+              <circle cx="48" cy="14" r="3.2"/>
+              <circle cx="100" cy="24" r="3.2"/>
+              <circle cx="112" cy="78" r="3.2"/>
+              <circle cx="60" cy="100" r="3.2"/>
+              <circle cx="66" cy="57" r="2.6"/>
+            </g>
+            <line x1="34" y1="47" x2="98" y2="67" stroke="currentColor" stroke-width="1"/>
+            <circle cx="34" cy="47" r="2.4" fill="none" stroke="currentColor"/>
+            <circle cx="98" cy="67" r="2.4" fill="none" stroke="currentColor"/>
+          </svg>
+        </div>
+        <div class="art art-drawing" style="--x:37%;--y:78%;--i:6;width:7.2em" data-phone="hide">
+          <!-- the tree of values of a martingale: one node per atom, finer and finer -->
+          <svg viewBox="0 0 140 100">
+            <g stroke="currentColor" stroke-width="1" fill="none">
+              <path d="M70 10 L32 46 M70 10 L104 46 M32 46 L14 86 M32 46 L36 86 M32 46 L56 86 M104 46 L86 86 M104 46 L124 86"/>
+            </g>
+            <g fill="currentColor">
+              <circle cx="70" cy="10" r="3.4"/>
+              <circle cx="32" cy="46" r="2.8"/>
+              <circle cx="104" cy="46" r="2.8"/>
+              <circle cx="14" cy="86" r="2.2"/>
+              <circle cx="36" cy="86" r="2.2"/>
+              <circle cx="56" cy="86" r="2.2"/>
+              <circle cx="86" cy="86" r="2.2"/>
+              <circle cx="124" cy="86" r="2.2"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <h1 class="landing-text">In a Banach lattice, the Radon–⁠Nikodým property and the
+        Krein–⁠Milman property are equivalent</h1>
+      <div class="landing-text disclaimer">
+        <!-- The second screen of the title: what the page is, and how to contact the author -->
+        <p>The following is a friendly exposition of the paper</p>
+        <p class="paper-ref"><a href="https://www.jstor.org/stable/2043994" target="_blank" rel="noopener"><em>Dans
+          Un Espace de Banach Reticule Solide, La Propriété de Radon-Nikodým et Celle de
+          Krein-Milman Sont Équivalentes</em></a> by Jean Bourgain and Michel Talagrand.</p>
+        <p>If you have any comments or corrections,<br>please contact the author at:</p>
+        <p class="contact">David Muñoz-Lahoz<br><span class="nowrap">&lt;david [dot] munnozl [at]
+          uam [dot] es&gt;</span></p>
+      </div>
+      <!-- the chevrons: one from the title down to the note, one from the note down to the paper -->
+      <a class="scroll-cue cue-title" href="#disclaimer" aria-label="Scroll down to the note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></a>
+      <a class="scroll-cue cue-note" href="#introduction" aria-label="Scroll down to the paper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></a>
+    </section>
+    <span class="stage-anchor" id="disclaimer"></span>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <ol>
+    <li><a href="#introduction"><span class="toc-num">1.</span> Introduction</a></li>
+    <li><a href="#sec:RNP"><span class="toc-num">2.</span> The Radon–Nikodým property</a></li>
+    <li><a href="#sec:KMP"><span class="toc-num">3.</span> The Krein–Milman property</a></li>
+    <li><a href="#sec:banach-lattices"><span class="toc-num">4.</span> Banach lattices</a></li>
+    <li><a href="#sec:main"><span class="toc-num">5.</span> The main theorem</a></li>
+    <li><a href="#ai-disclosure-and-image-credits">AI disclosure and image credits</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+  <!-- Reading progress, under the table of contents on wide screens (src/css/03-layout.css):
+       a thin bar that grows on hover to show the percentage, and an eye that hides it.
+       src/js/site.js fills the bar and remembers the eye. -->
+  <div class="reading-progress">
+    <button class="progress-eye" type="button" aria-pressed="false" aria-label="Hide reading progress">
+      <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg>
+    </button>
+    <div class="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="progress-fill"></div>
+      <span class="progress-label">0%</span>
+    </div>
+  </div>
+</nav>
+
+<section class="sec" aria-labelledby="introduction-h">
+  <h2 id="introduction-h"><a class="sec-anchor" id="introduction" href="#introduction"><span class="secnum">1.</span>
+    Introduction</a></h2>
+
+  <p>Two classical properties of Banach spaces are the Radon–Nikodým property (RNP), which
+    characterizes when the Radon–Nikodým theorem holds for vector-valued measures, and the
+    Krein–Milman property (KMP), which characterizes when the Krein–Milman theorem holds for closed
+    bounded convex sets. It turns out that not only does the RNP admit a geometric characterization,
+    but also the RNP implies the KMP. It is one of the major open problems in the geometry of Banach
+    spaces whether the converse holds.</p>
+
+  <p>In <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span>, J. Bourgain and M.
+    Talagrand show that the converse does hold for Banach lattices, and provide two proofs of it:
+    one using existing geometric machinery, and a more direct one using the order structure. This
+    result is remarkable, since it derives a purely geometric theorem using the order structure of
+    the space. Moreover, its proof uses the geometry of Banach spaces, the theory of order
+    continuous Banach lattices, and martingales, which are also closely related to the RNP.</p>
+
+  <p>Our goal is to provide a gentle exposition of
+    <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span>, starting with a smooth
+    introduction to the RNP in <a class="ref" href="#sec:RNP">Section 2</a>, the KMP in
+    <a class="ref" href="#sec:KMP">Section 3</a>, and Banach lattices in
+    <a class="ref" href="#sec:banach-lattices">Section 4</a>, all before jumping to the main
+    contents of the paper in <a class="ref" href="#sec:main">Section 5</a>.</p>
+</section>
+
+<section class="sec" aria-labelledby="sec:RNP-h">
+  <h2 id="sec:RNP-h"><a class="sec-anchor" id="sec:RNP" href="#sec:RNP"><span class="secnum">2.</span>
+    The Radon–Nikodým property</a></h2>
+
+  <p>Let us start by recalling the classical Radon–Nikodým theorem.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/radon.jpg" alt="Johann Radon" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Radon</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/portraits/nikodym.jpg" alt="Otton Nikodým, statue in Kraków" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Nikodým</figcaption>
+      </figure>
+    </div>
+    <p>Johann Radon (1887–⁠1956) proved the theorem for measures on \(\R^n\) in 1913
+      <span class="cite">[<a href="#bib-radon1913">18</a>]</span>; Otton Nikodým (1887–⁠1974)
+      extended it to abstract measure spaces in 1930
+      <span class="cite">[<a href="#bib-nikodym1930">17</a>]</span>.</p>
+  </aside>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 2.1</span>
+      <span class="thm-note">(Radon–Nikodým)</span>.</span> Let \((\Omega, \Sigma, \mu)\) be a
+      \(\sigma\)-finite measure space and let \(\nu \colon \Sigma \to \R\) be a finite signed
+      measure that is absolutely continuous with respect to <span class="nobr">\(\mu\),</span> that
+      is, \(\nu(A) = 0\) whenever \(A \in \Sigma\) satisfies
+      <span class="nobr">\(\mu(A) = 0\).</span> Then there exists \(f \in L_1(\mu)\) such that
+      \[\nu(A) = \int_A f \, d\mu \quad \text{for every } A \in \Sigma.\]
+      Moreover, \(f\) is unique up to \(\mu\)-almost everywhere equality.</p>
+  </div>
+
+  <p>Informally, a Banach space \(X\) satisfies the Radon–Nikodým property if the analogue of the
+    Radon–Nikodým theorem holds for measures with values in <span class="nobr">\(X\).</span> Thus, a
+    precise formulation of this property requires the notion of \(X\)-valued measures and of
+    integrals of \(X\)-valued functions. Throughout, \(X\) denotes a Banach space and
+    \((\Omega, \Sigma, \mu)\) a finite measure space.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 2.2</span>.</span> A <em>vector
+      measure</em> is a map \(F \colon \Sigma \to X\) that is countably additive, that is, for every
+      sequence \((A_n)\) of pairwise disjoint sets in <span class="nobr">\(\Sigma\),</span>
+      \(\sum_n F(A_n)\) converges and it equals <span class="nobr">\(F(\bigcup_n A_n)\).</span></p>
+    <p>The <em>variation</em> of \(F\) is the map \(|F| \colon \Sigma \to [0, \infty]\) given by
+      \[|F|(A) = \sup \Big\{ \sum_{i=1}^n \|F(A_i)\| : A_1, \ldots, A_n \in \Sigma \text{ is a partition of } A \Big\},\]
+      and \(F\) is of <em>bounded variation</em> if
+      <span class="nobr">\(|F|(\Omega) &lt; \infty\).</span> We say that \(F\) is
+      <em>\(\mu\)-continuous</em> if \(F(A) = 0\) whenever \(A \in \Sigma\) satisfies
+      <span class="nobr">\(\mu(A) = 0\).</span></p>
+  </div>
+
+  <p>There are several natural ways to integrate \(X\)-valued functions; in our case, we are
+    interested in the Bochner integral. A function \(s \colon \Omega \to X\) is <em>simple</em> if
+    it is of the form \(s = \sum_{i=1}^n x_i \chi_{A_i}\) with
+    <span class="nobr">\(n \in \N\),</span> \(x_i \in X\) and
+    <span class="nobr">\(A_i \in \Sigma\);</span> its integral over \(A \in \Sigma\) is defined to
+    be <span class="nobr">\(\int_A s \, d\mu = \sum_{i=1}^n x_i \mu(A \cap A_i)\).</span> A function
+    \(f \colon \Omega \to X\) is <em>strongly measurable</em> if it is the \(\mu\)-almost everywhere
+    limit of a sequence of simple functions.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/bochner.jpg" alt="Salomon Bochner" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Bochner</figcaption>
+      </figure>
+    </div>
+    <p>Salomon Bochner (1899–⁠1982) introduced this integral in 1933
+      <span class="cite">[<a href="#bib-bochner1933">4</a>]</span>, the year he left Munich for
+      Princeton.</p>
+  </aside>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 2.3</span>.</span> A strongly
+      measurable function \(f \colon \Omega \to X\) is <em>Bochner integrable</em> if there is a
+      sequence \((s_n)\) of simple functions such that
+      \[\int_\Omega \|f - s_n\| \, d\mu \to 0.\]
+      In this case, the <em>Bochner integral</em> of \(f\) over \(A \in \Sigma\) is defined to be
+      \[\int_A f \, d\mu = \lim_n \int_A s_n \, d\mu.\]
+      The integral does not depend on the choice of <span class="nobr">\((s_n)\).</span></p>
+  </div>
+
+  <p>A theorem of Bochner states that a strongly measurable function \(f\) is Bochner integrable if
+    and only if <span class="nobr">\(\int_\Omega \|f\| \, d\mu &lt; \infty\).</span> We denote by
+    \(L_1(\mu; X)\) the space of (equivalence classes up to \(\mu\)-almost everywhere equality of)
+    Bochner integrable functions. This is a Banach space when equipped with the norm
+    \[\|f\|_1 = \int_\Omega \|f\| \, d\mu.\]
+    Every \(f \in L_1(\mu; X)\) produces a vector measure
+    <span class="nobr">\(F(A) = \int_A f \, d\mu\),</span> which is \(\mu\)-continuous and of
+    bounded variation; in fact, <span class="nobr">\(|F|(A) = \int_A \|f\| \, d\mu\).</span> The RNP
+    asks for the converse to hold.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 2.4</span>.</span> A Banach space
+      \(X\) has the <em>Radon–Nikodým property</em> (RNP) if for every finite measure space
+      \((\Omega, \Sigma, \mu)\) and every \(\mu\)-continuous vector measure
+      \(F \colon \Sigma \to X\) of bounded variation there exists \(f \in L_1(\mu; X)\) such that
+      \[F(A) = \int_A f \, d\mu \quad \text{for every } A \in \Sigma.\]</p>
+  </div>
+
+  <div class="thm thm-remark env-rem">
+    <p><span class="thm-head"><span class="thm-name">Remark</span>.</span> In this language, the
+      Radon–Nikodým theorem simply says that \(\R\) has the RNP.</p>
+  </div>
+
+  <p>There is also a characterization of the RNP in terms of vector-valued martingales. We will
+    mainly use the geometric characterization of the RNP, which is explained below, but since
+    vector-valued conditional expectations and martingales will appear in the proof of the main
+    theorem, this seems like a good excuse to introduce them.</p>
+
+  <div class="thm thm-plain env-prop">
+    <p><span class="thm-head"><span class="thm-name">Proposition 2.5</span>.</span> Let
+      \(\mathcal{A} \subseteq \Sigma\) be a sub-\(\sigma\)-algebra. For every \(f \in L_1(\mu; X)\)
+      there exists a unique (up to \(\mu\)-almost everywhere equality) \(\mathcal{A}\)-strongly
+      measurable function \(\mathbb{E}(f \mid \mathcal{A}) \in L_1(\mu; X)\) such that
+      \[\int_A \mathbb{E}(f \mid \mathcal{A}) \, d\mu = \int_A f \, d\mu \quad \text{for every } A \in \mathcal{A}.\]
+      Moreover,
+      \[\|\mathbb{E}(f \mid \mathcal{A})\| \leq \mathbb{E}(\|f\| \mid \mathcal{A}) \quad \text{$\mu$-almost everywhere}.\]</p>
+  </div>
+
+  <p>Denote by \(L_\infty(\mu; X)\) the space of (equivalence classes of) strongly measurable
+    functions \(f \colon \Omega \to X\) such that
+    \[\|f\|_\infty = \operatorname{ess\,sup}_{\omega \in \Omega} \|f(\omega)\| &lt; \infty.\]
+    As in the scalar case, \(L_\infty(\mu; X)\) is a Banach space when equipped with this norm. The
+    following fact will be used in the proof of the main theorem.</p>
+
+  <div class="thm thm-plain env-cor" id="cor:conditional-expectation-contractive">
+    <p><span class="thm-head"><span class="thm-name">Corollary 2.6</span>.</span> For every
+      <span class="nobr">\(f \in L_\infty(\mu; X)\),</span> we have
+      <span class="nobr">\(\|\mathbb{E}(f \mid \mathcal{A})\|_\infty \leq \|f\|_\infty\).</span></p>
+  </div>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/levy.jpg" alt="Paul Lévy" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Lévy</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/portraits/doob.jpg" alt="Joseph L. Doob" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Doob</figcaption>
+      </figure>
+    </div>
+    <p>Paul Lévy (1886–⁠1971) studied martingales in the 1930s, before they had a name. Jean Ville
+      named them in 1939 <span class="cite">[<a href="#bib-ville1939">21</a>]</span>, after a
+      betting strategy, and Joseph L. Doob (1910–⁠2004) developed their theory, including the
+      convergence theorems <span class="cite">[<a href="#bib-doob1953">9</a>]</span>.</p>
+  </aside>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 2.7</span>.</span> A
+      <em>filtration</em> is an increasing sequence \((\Sigma_n)\) of sub-\(\sigma\)-algebras of
+      <span class="nobr">\(\Sigma\).</span> A sequence \((f_n)\) in \(L_1(\mu; X)\) is a
+      <em>martingale</em> with respect to \((\Sigma_n)\) if, for every
+      <span class="nobr">\(n \in \N\),</span> \(f_n\) is \(\Sigma_n\)-strongly measurable and
+      \[\mathbb{E}(f_{n+1} \mid \Sigma_n) = f_n.\]
+      The martingale is <em>uniformly bounded</em> if
+      <span class="nobr">\(\sup_n \|f_n\|_\infty &lt; \infty\).</span></p>
+  </div>
+
+  <p>The link between martingales and the RNP is already apparent in the following example. Let
+    \((\pi_n)\) be a sequence of finite partitions of \(\Omega\) into sets of positive measure such
+    that \(\pi_{n+1}\) refines <span class="nobr">\(\pi_n\),</span> and let \(\Sigma_n\) be the
+    (finite) \(\sigma\)-algebra generated by <span class="nobr">\(\pi_n\).</span> Given a vector
+    measure <span class="nobr">\(F \colon \Sigma \to X\),</span> define
+    \[f_n = \sum_{A \in \pi_n} \frac{F(A)}{\mu(A)} \chi_A.\]
+    For every <span class="nobr">\(A \in \pi_n\),</span> additivity of \(F\) gives
+    \[\int_A f_{n+1} \, d\mu = \sum_{\substack{B \in \pi_{n+1} \\
+      B \subseteq A}} F(B) = F(A) = \int_A f_n \, d\mu,\]
+    so \((f_n)\) is a martingale with respect to <span class="nobr">\((\Sigma_n)\).</span> If
+    moreover \(\|F(A)\| \leq C \mu(A)\) for every <span class="nobr">\(A \in \Sigma\),</span> then
+    the martingale is uniformly bounded by <span class="nobr">\(C\).</span> Whenever \(F\) has a
+    density <span class="nobr">\(f\),</span> we have
+    <span class="nobr">\(f_n = \mathbb{E}(f \mid \Sigma_n)\),</span> and the martingale converges to
+    \(f\) if \(\Sigma\) is generated by <span class="nobr">\(\bigcup_n \Sigma_n\).</span>
+    Conversely, the limit of <span class="nobr">\((f_n)\),</span> if it exists, is the natural
+    candidate for a density of <span class="nobr">\(F\).</span> This idea leads to the martingale
+    characterization of the RNP.</p>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 2.8</span>
+      <span class="thm-note">(Chatterji
+      <span class="cite">[<a href="#bib-chatterji1968">7</a>]</span>)</span>.</span> A Banach space
+      \(X\) has the RNP if and only if, for every finite measure space \((\Omega, \Sigma, \mu)\) and
+      every filtration <span class="nobr">\((\Sigma_n)\),</span> every uniformly bounded
+      \(X\)-valued martingale with respect to \((\Sigma_n)\) converges \(\mu\)-almost everywhere and
+      in <span class="nobr">\(L_1(\mu; X)\).</span></p>
+  </div>
+
+  <p>We have yet to give examples of spaces with or without the RNP. However, we will wait to do so
+    until we have one further characterization of the RNP, in this case a geometric one. It is
+    remarkable that the RNP, which in principle has to do with measure-theoretic and probabilistic
+    notions, also admits a clean geometric characterization in terms of dentable sets.</p>
+
+  <p>From now on, we will stick to real Banach spaces. Given \(x \in X\) and
+    <span class="nobr">\(\varepsilon > 0\),</span> we denote by \(B(x, \varepsilon)\) the open ball
+    centered at \(x\) with radius <span class="nobr">\(\varepsilon\),</span> and given
+    <span class="nobr">\(A \subseteq X\),</span> we denote by \(\operatorname{co}(A)\) its convex
+    hull, and by \(\overline{\mathrm{co}}(A)\) its closed convex hull.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 2.9</span>.</span> A nonempty
+      bounded set \(A \subseteq X\) is <em>dentable</em> if, for every
+      <span class="nobr">\(\varepsilon > 0\),</span> there exists \(x \in A\) such that
+      \[x \notin \overline{\mathrm{co}}\big(A \setminus B(x, \varepsilon)\big).\]</p>
+  </div>
+
+  <p>In other words, \(A\) is dentable if, for every <span class="nobr">\(\varepsilon > 0\),</span>
+    one can find a point of \(A\) that cannot be reached with convex combinations (and limits of
+    them) of the points of \(A\) that are at distance at least \(\varepsilon\) from it.</p>
+
+  <div class="thm thm-remark env-rem">
+    <p><span class="thm-head"><span class="thm-name">Remark</span>.</span> Dentability is also
+      commonly formulated in terms of slices. Let \(A \subseteq X\) be nonempty and bounded, and let
+      <span class="nobr">\(f \in X^*\).</span> We write
+      \[M(A, f) = \sup_{x \in A} f(x),\]
+      which is finite because \(A\) is bounded. For <span class="nobr">\(\alpha > 0\),</span> the
+      <em>slice</em> of \(A\) determined by \(f\) and \(\alpha\) is defined to be
+      \[S(A, f, \alpha) = \{ x \in A : f(x) > M(A, f) - \alpha \}.\]
+      By definition of the supremum, every slice is nonempty. Geometrically, a slice is the part of
+      \(A\) that is cut off by a hyperplane parallel to a supporting hyperplane of
+      <span class="nobr">\(A\).</span></p>
+    <p>The set \(A\) is dentable if and only if it has slices of arbitrarily small diameter, that
+      is, if for every \(\varepsilon > 0\) there exist \(f \in X^*\) and \(\alpha > 0\) such that
+      \[\operatorname{diam} S(A, f, \alpha) &lt; \varepsilon.\]
+      Indeed, suppose first that
+      <span class="nobr">\(\operatorname{diam} S(A, f, \alpha) &lt; \varepsilon\),</span> and pick
+      any <span class="nobr">\(x \in S(A, f, \alpha)\).</span> Every point of the slice is at
+      distance less than \(\varepsilon\) from <span class="nobr">\(x\),</span> so
+      \[A \setminus B(x, \varepsilon) \subseteq \{ y \in X : f(y) \leq M(A, f) - \alpha \}.\]
+      The right-hand side is closed and convex, so it also contains
+      <span class="nobr">\(\overline{\mathrm{co}}(A \setminus B(x, \varepsilon))\).</span> Since
+      <span class="nobr">\(f(x) > M(A, f) - \alpha\),</span> we conclude that
+      <span class="nobr">\(x \notin \overline{\mathrm{co}}(A \setminus B(x, \varepsilon))\).</span></p>
+    <p>Conversely, let \(\varepsilon > 0\) and let \(x \in A\) be such that
+      <span class="nobr">\(x \notin C = \overline{\mathrm{co}}(A \setminus B(x, \varepsilon))\).</span>
+      If \(C\) is empty, then <span class="nobr">\(A \subseteq B(x, \varepsilon)\),</span> and every
+      slice of \(A\) has diameter at most <span class="nobr">\(2\varepsilon\).</span> Otherwise, by
+      the Hahn–Banach separation theorem there exists \(f \in X^*\) such that
+      \[f(x) > \beta = \sup_{y \in C} f(y).\]
+      Let <span class="nobr">\(\alpha = M(A, f) - \beta\),</span> which is positive because
+      <span class="nobr">\(M(A, f) \geq f(x) > \beta\).</span> Then
+      \(S(A, f, \alpha) = \{ y \in A : f(y) > \beta \}\) is disjoint from
+      <span class="nobr">\(A \setminus B(x, \varepsilon)\),</span> that is,
+      <span class="nobr">\(S(A, f, \alpha) \subseteq B(x, \varepsilon)\),</span> and so
+      <span class="nobr">\(\operatorname{diam} S(A, f, \alpha) \leq 2\varepsilon\).</span> Since
+      \(\varepsilon > 0\) is arbitrary, \(A\) has slices of arbitrarily small diameter.</p>
+  </div>
+
+  <figure class="applet" id="applet-slices">
+    <!-- Slices of a planar set (script: src/js/slices.js; the caption is below the figure).
+         Left: the set A, the functional f and the slice S(A, f, alpha); right: the graph of f
+         over A, cut by a plane. -->
+    <div class="applet-views">
+      <canvas class="applet-2d" tabindex="0" role="img" aria-label="The set A, the functional f and the slice S(A, f, alpha) in the plane. Drag, or use the arrow keys, to change f."></canvas>
+      <canvas class="applet-3d" role="img" aria-label="The graph of f over A, cut by the plane at height M(A, f) minus alpha. Drag to turn it."></canvas>
+    </div>
+    <div class="applet-controls">
+      <div class="applet-shapes" role="group" aria-label="The set A">
+        <button type="button" data-shape="disk" aria-pressed="true">disk</button>
+        <button type="button" data-shape="square" aria-pressed="false">square</button>
+        <button type="button" data-shape="triangle" aria-pressed="false">triangle</button>
+        <button type="button" data-shape="blob" aria-pressed="false">blob</button>
+        <button type="button" data-shape="draw" aria-pressed="false">draw</button>
+      </div>
+      <label class="applet-alpha">\(\alpha\)
+        <input type="range" min="0.01" max="1" step="0.01" value="0.3" aria-label="alpha, as a fraction of the width of A in the direction of f"></label>
+    </div>
+    <div class="applet-readout" aria-live="polite">
+      <span>\(f\) = (<span data-out="f"></span>)</span>
+      <span>\(M(A,f)\) = <span data-out="M"></span></span>
+      <span>\(\alpha\) = <span data-out="alpha"></span></span>
+      <span>\(\operatorname{diam} S(A,f,\alpha)\) = <span data-out="diam"></span></span>
+    </div>
+    <figcaption><span class="fig-name">Figure 1.</span> \(A\) is a set in the plane, chosen below;
+      with <em>draw</em> you can trace your own. The blue region is the slice
+      <span class="nobr">\(S(A,f,\alpha)\):</span> the points of \(A\) where \(f\) is larger than
+      <span class="nobr">\(M(A,f) - \alpha\),</span> and \(M(A,f)\) is reached at the marked point.
+      The arrow is <span class="nobr">\(f\):</span> drag it to change
+      <span class="nobr">\(f\),</span> and use the slider to change
+      <span class="nobr">\(\alpha\).</span> On the right, the values of \(f\) are drawn as heights,
+      and the slice is the part that rises above the blue plane.</figcaption>
+  </figure>
+
+  <script src="src/js/slices.js" defer></script>
+
+  <p>The same idea can be localized at a single point of <span class="nobr">\(A\).</span></p>
+
+  <aside class="margin-history" aria-label="Note">
+    <p>Also called <em>denting point</em> in the literature.</p>
+  </aside>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 2.10</span>.</span> Let
+      \(A \subseteq X\) be nonempty and bounded. A point \(x \in A\) is a <em>dentable point</em> of
+      \(A\) (we also say that \(x\) is <em>dentable in</em> <span class="nobr">\(A\))</span> if, for
+      every <span class="nobr">\(\varepsilon > 0\),</span>
+      \[x \notin \overline{\mathrm{co}}\big(A \setminus B(x, \varepsilon)\big).\]</p>
+  </div>
+
+  <p>Clearly, a set with a dentable point is dentable. The converse is false: the open unit ball of
+    \(\R^2\) is dentable, but none of its points is a dentable point, since every \(x\) in it is the
+    midpoint of two points of the ball at distance at least \(\varepsilon\) from
+    <span class="nobr">\(x\),</span> for \(\varepsilon > 0\) small enough.</p>
+
+  <div class="thm thm-remark env-rem">
+    <p><span class="thm-head"><span class="thm-name">Remark</span>.</span> The argument of the
+      previous remark shows that \(x \in A\) is a dentable point of \(A\) if and only if, for every
+      <span class="nobr">\(\varepsilon > 0\),</span> there exist \(f \in X^*\) and \(\alpha > 0\)
+      such that
+      \[x \in S(A, f, \alpha) \quad \text{and} \quad \operatorname{diam} S(A, f, \alpha) &lt; \varepsilon.\]</p>
+  </div>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 2.11</span>
+      <span class="thm-note">(<span class="cite">[<a href="#bib-diestel1975">8</a>,
+      Chapter 6]</span>)</span>.</span> A Banach space has the Radon–Nikodým property if and only if
+      every bounded subset is dentable.</p>
+  </div>
+
+  <div class="thm thm-plain env-cor" id="cor:RNP-subspaces">
+    <p><span class="thm-head"><span class="thm-name">Corollary 2.12</span>
+      <span class="thm-note">(<span class="cite">[<a href="#bib-diestel1975">8</a>, Chapter 6,
+      Corollary 3]</span>)</span>.</span> For a Banach space <span class="nobr">\(X\),</span> the
+      following are equivalent:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>\(X\) has the RNP.</p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>Every closed subspace of \(X\) has the RNP.</p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p>Every separable closed subspace of \(X\) has the RNP.</p>
+      </li>
+    </ol>
+  </div>
+
+  <div class="thm thm-plain env-example" id="ex:L1">
+    <p><span class="thm-head"><span class="thm-name">Example 2.13</span>.</span> The unit ball
+      \(B_{L_1[0,1]}\) is not dentable. Indeed, we will see that every \(f \in B_{L_1[0,1]}\) is the
+      average of two elements \(g, h \in B_{L_1[0,1]}\) with
+      <span class="nobr">\(\|g - f\|_1 = \|h - f\|_1 = 1\).</span> In particular, for every
+      <span class="nobr">\(f \in B_{L_1[0,1]}\),</span>
+      \[f \in \operatorname{co}\big(B_{L_1[0,1]} \setminus B(f, 1)\big),\]
+      so \(B_{L_1[0,1]}\) is not dentable. If <span class="nobr">\(f = 0\),</span> take
+      \(g = \chi_{[0,1]}\) and <span class="nobr">\(h = -\chi_{[0,1]}\).</span> Otherwise, the
+      function \(t \mapsto \int_0^t |f|\) is continuous, so by the intermediate value theorem there
+      exists \(c \in [0,1]\) such that
+      \[\int_0^c |f| = \int_c^1 |f| = \frac{\|f\|_1}{2}.\]
+      Let \(\lambda = 1/\|f\|_1 \geq 1\) and
+      <span class="nobr">\(u = \lambda f (\chi_{[0,c]} - \chi_{(c,1]})\),</span> and define
+      \(g = f + u\) and <span class="nobr">\(h = f - u\).</span> Clearly \(f = (g + h)/2\) and
+      <span class="nobr">\(\|g - f\|_1 = \|h - f\|_1 = \|u\|_1 = \lambda \|f\|_1 = 1\).</span>
+      Moreover,
+      \[g = (1 + \lambda) f \chi_{[0,c]} + (1 - \lambda) f \chi_{(c,1]},\]
+      so that
+      \[\|g\|_1 = (1 + \lambda) \frac{\|f\|_1}{2} + (\lambda - 1) \frac{\|f\|_1}{2} = \lambda \|f\|_1 = 1,\]
+      and similarly <span class="nobr">\(\|h\|_1 = 1\).</span> By the previous theorem, \(L_1[0,1]\)
+      does not have the RNP.</p>
+  </div>
+
+  <div class="thm thm-plain env-example" id="ex:c0">
+    <p><span class="thm-head"><span class="thm-name">Example 2.14</span>.</span> The unit ball
+      \(B_{c_0}\) is not dentable. Let <span class="nobr">\(x = (x_n) \in B_{c_0}\).</span> Since
+      <span class="nobr">\(x_n \to 0\),</span> there is \(N \in \N\) such that
+      <span class="nobr">\(|x_N| \leq 1/2\).</span> Denote by \(e_N\) the \(N\)-th unit vector, and
+      let \(y = x + \frac{1}{2} e_N\) and <span class="nobr">\(z = x - \frac{1}{2} e_N\).</span>
+      Only the \(N\)-th coordinate changes, and <span class="nobr">\(|x_N \pm 1/2| \leq 1\),</span>
+      so <span class="nobr">\(y, z \in B_{c_0}\).</span> Moreover,
+      \(\|y - x\|_\infty = \|z - x\|_\infty = 1/2\) and <span class="nobr">\(x = (y + z)/2\).</span>
+      Hence, for every <span class="nobr">\(x \in B_{c_0}\),</span>
+      \[x \in \operatorname{co}\big(B_{c_0} \setminus B(x, 1/2)\big),\]
+      so \(B_{c_0}\) is not dentable. By the previous theorem, \(c_0\) does not have the RNP.</p>
+  </div>
+
+  <p>What about spaces with the RNP? The following theorem provides plenty.</p>
+
+  <div class="thm thm-plain env-thm">
+    <p class="head-only"><span class="thm-head"><span class="thm-name">Theorem 2.15</span>
+      <span class="thm-note">(<span class="cite">[<a href="#bib-diestel1975">8</a>,
+      Chapter 6]</span>)</span>.</span></p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>Every separable dual space has the RNP.</p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>Every reflexive space has the RNP.</p>
+      </li>
+    </ol>
+  </div>
+
+  <p>In <a class="ref" href="#ex:L1">Example 2.13</a> and
+    <a class="ref" href="#ex:c0">Example 2.14</a>, we showed that these spaces fail the RNP by
+    checking that their unit balls are not dentable. In both examples, moreover, the unit ball has
+    no extreme points. However, this is not necessary for the unit ball to fail to be dentable.</p>
+
+  <div class="thm thm-plain env-example" id="ex:cantor">
+    <p><span class="thm-head"><span class="thm-name">Example 2.16</span>.</span> Let \(\Delta\) be
+      the Cantor set and let \(B\) be the unit ball of <span class="nobr">\(C(\Delta)\).</span> This
+      unit ball has extreme points: every \(f \in B\) with \(|f|=\chi _\Delta\) is an extreme
+      point.</p>
+    <p>However, every slice of \(B\) has diameter <span class="nobr">\(2\).</span> By the Riesz
+      representation theorem, every \(\varphi \in C(\Delta)^*\) is integration against a regular
+      signed Borel measure \(\mu\) on <span class="nobr">\(\Delta\),</span> with
+      <span class="nobr">\(\|\varphi\| = |\mu|(\Delta)\),</span> so that
+      <span class="nobr">\(M(B, \varphi) = |\mu|(\Delta)\).</span> Let \(\alpha > 0\) and choose
+      \(f \in B\) with <span class="nobr">\(\int f \, d\mu > |\mu|(\Delta) - \alpha/4\).</span> For
+      every <span class="nobr">\(n \in \N\),</span> the Cantor set can be partitioned into \(2^n\)
+      nonempty clopen pieces, whose \(|\mu|\)-masses must add up to
+      <span class="nobr">\(|\mu|(\Delta)\).</span> Taking \(n\) large enough, some piece \(U\)
+      satisfies <span class="nobr">\(|\mu|(U) &lt; \alpha/4\).</span> Now set
+      \[g_\pm = f \chi_{\Delta \setminus U} \pm \chi_U.\]
+      These functions are continuous (because \(U\) is clopen) and lie in
+      <span class="nobr">\(B\),</span> and
+      \[\Big| \int g_\pm \, d\mu - \int f \, d\mu \Big| = \Big| \int_U (\pm 1 - f) \, d\mu \Big| \leq 2 |\mu|(U) &lt; \frac{\alpha}{2},\]
+      so both are in <span class="nobr">\(S(B, \varphi, \alpha)\).</span> But
+      <span class="nobr">\(g_+ - g_- = 2 \chi_U\),</span> so
+      <span class="nobr">\(\|g_+ - g_-\|_\infty = 2\).</span> In particular, \(B\) is not dentable,
+      and \(C(\Delta)\) does not have the RNP.</p>
+  </div>
+
+  <p>One may still have the feeling that dentability is somehow related to extreme points. Bourgain
+    himself had established the following close relation between the RNP and extreme points in an
+    earlier paper.</p>
+
+  <div class="thm thm-plain env-thm" id="thm:bourgain">
+    <p><span class="thm-head"><span class="thm-name">Theorem 2.17</span>
+      <span class="thm-note">(Bourgain <span class="cite">[<a href="#bib-bourgain1978">5</a>,
+      Corollary 4]</span>)</span>.</span> A Banach space \(X\) has the RNP if and only if every
+      nonempty bounded closed convex set of \(X\) contains an extreme point of its
+      weak\(^*\)-closure in <span class="nobr">\(X^{**}\).</span></p>
+  </div>
+
+  <p>This certainly resonates with the Krein–Milman property.</p>
+</section>
+
+<section class="sec" aria-labelledby="sec:KMP-h">
+  <h2 id="sec:KMP-h"><a class="sec-anchor" id="sec:KMP" href="#sec:KMP"><span class="secnum">3.</span>
+    The Krein–Milman property</a></h2>
+
+  <p>Let us start by recalling the notion of extreme point and the classical Krein–Milman theorem,
+    which will motivate the introduction of the Krein–Milman property.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 3.1</span>.</span> Let \(C\) be a
+      nonempty closed convex subset of a topological vector space. A subset \(D\) of \(C\) is
+      <em>extremal</em> in \(C\) if \(D\) is itself a nonempty closed convex set and it has the
+      following property: if \(x,y \in C\) and <span class="nobr">\(tx+(1-t)y\in D\),</span> for
+      some <span class="nobr">\(t \in (0,1)\),</span> then <span class="nobr">\(x,y \in D\).</span>
+      An <em>extreme point</em> of \(C\) is a point \(x\) in \(C\) such that \(\{x\}\) is an
+      extremal subset of <span class="nobr">\(C\).</span> The set of extreme points of \(C\) is
+      denoted by <span class="nobr">\(\ext(C)\).</span></p>
+  </div>
+
+  <div class="thm thm-remark env-rem">
+    <p><span class="thm-head"><span class="thm-name">Remark</span>.</span> Let \(C\) be a nonempty
+      closed convex subset of a Hausdorff topological vector space, and let
+      <span class="nobr">\(x \in C\).</span> Then \(x\) is an extreme point of \(C\) if and only if
+      whenever \(x_1,x_2 \in C\) and <span class="nobr">\(x=(x_1+x_2)/2\),</span> it follows that
+      <span class="nobr">\(x_1=x_2=x\).</span></p>
+  </div>
+
+  <figure class="applet" id="applet-extreme">
+    <!-- Extreme points of convex sets in the plane and in space (script: src/js/extreme.js; the caption is below the figure). The readout shows one of the four status lines. -->
+    <canvas class="applet-stage" role="img" aria-label="A convex set C with its extreme points marked. Click a point x of C to see it as the midpoint of two points y and z of C, unless it is extreme. Drag a solid to turn it."></canvas>
+    <div class="applet-controls">
+      <div class="applet-shapes" role="group" aria-label="Sets in the plane">
+        <button type="button" data-shape="square" aria-pressed="true">square</button>
+        <button type="button" data-shape="triangle" aria-pressed="false">triangle</button>
+        <button type="button" data-shape="disk" aria-pressed="false">disk</button>
+        <button type="button" data-shape="stadium" aria-pressed="false">stadium</button>
+        <button type="button" data-shape="half-disk" aria-pressed="false">half-disk</button>
+        <button type="button" data-shape="draw" aria-pressed="false">draw</button>
+      </div>
+      <div class="applet-shapes" role="group" aria-label="Sets in space">
+        <button type="button" data-shape="cube" aria-pressed="false">cube</button>
+        <button type="button" data-shape="tetrahedron" aria-pressed="false">tetrahedron</button>
+        <button type="button" data-shape="cylinder" aria-pressed="false">cylinder</button>
+        <button type="button" data-shape="cone" aria-pressed="false">cone</button>
+      </div>
+    </div>
+    <div class="applet-readout" aria-live="polite">
+      <span data-status="none">Click a point \(x\) of <span class="nobr">\(C\).</span></span>
+      <span data-status="extreme" hidden><span class="nobr">\(x \in \ext(C)\):</span> it is not the
+        midpoint of two distinct points of <span class="nobr">\(C\).</span></span>
+      <span data-status="mid" hidden>\(x = \tfrac{1}{2}(y + z)\) with \(y \neq z\) in
+        <span class="nobr">\(C\),</span> so <span class="nobr">\(x \notin \ext(C)\).</span></span>
+      <span data-status="draw" hidden>Trace a curve: \(C\) will be its closed convex hull.</span>
+    </div>
+    <figcaption><span class="fig-name">Figure 2.</span> Extreme points of convex sets \(C\) in the
+      plane and in space, marked in blue. Click a point \(x\) of \(C\) (in the plane, you can also
+      drag it): if \(x\) is not extreme, it appears as the midpoint of two distinct points \(y\) and
+      \(z\) of <span class="nobr">\(C\),</span> as in the previous remark. Choose <em>draw</em> to
+      trace your own set: \(C\) is then the closed convex hull of the curve. Drag the solids to turn
+      them.</figcaption>
+  </figure>
+
+  <script src="src/js/extreme.js" defer></script>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/krein.jpg" alt="Mark Krein, memorial plaque in Odessa" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Krein</figcaption>
+      </figure>
+    </div>
+    <p>Mark Krein (1907–⁠1989), a leading figure of the Soviet school of functional analysis, proved
+      this theorem in Odessa with his student David Milman (1912–⁠1982) in 1940
+      <span class="cite">[<a href="#bib-krein_milman1940">13</a>]</span>.</p>
+  </aside>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 3.2</span>
+      <span class="thm-note">(Krein–Milman)</span>.</span> Let \(C\) be a nonempty compact convex
+      subset of a Hausdorff locally convex topological vector space. Then \(C\) is the closed convex
+      hull of its set of extreme points, that is, <span class="nobr">\(C=\co(\ext(C))\).</span></p>
+  </div>
+
+  <p>This theorem has many important consequences. For example,
+    <a class="ref" href="#ex:c0">Example 2.14</a> shows that the unit ball of \(c_0\) does not have
+    extreme points, hence it cannot be compact in any locally convex Hausdorff linear topology on
+    <span class="nobr">\(c_0\);</span> in particular, \(c_0\) is not linearly isometric to the dual
+    of any Banach space (for in this case it would have the weak\(^*\) topology, a locally convex
+    Hausdorff linear topology for which the unit ball is compact).</p>
+
+  <p>Every compact subset of a Hausdorff topological vector space is both bounded and closed. Hence
+    it is natural to wonder when a stronger version of the Krein–Milman theorem, concerning closed
+    bounded subsets, holds.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 3.3</span>.</span> A Banach space
+      \(X\) has the <em>Krein–Milman property</em> (KMP) if every nonempty closed bounded convex
+      subset \(C\) of \(X\) is the closed convex hull of its set of extreme points.</p>
+  </div>
+
+  <p>In particular, if \(X\) has the KMP, then every nonempty closed bounded convex subset of \(X\)
+    has at least one extreme point. Surprisingly, this apparently weaker condition is equivalent to
+    the KMP, as we will see below.</p>
+
+  <p>Since being an extreme point of \(C\) only depends on \(C\) and not on the ambient space, the
+    KMP passes to closed subspaces. Moreover, a linear isomorphism between Banach spaces maps
+    nonempty closed bounded convex sets onto nonempty closed bounded convex sets, extreme points
+    onto extreme points, and closed convex hulls onto closed convex hulls, so the KMP is invariant
+    under isomorphisms. Consequently, if a Banach space contains a closed subspace isomorphic to a
+    space failing the KMP, then it fails the KMP as well.
+    <a class="ref" href="#ex:L1">Example 2.13</a> and <a class="ref" href="#ex:c0">Example 2.14</a>
+    show that the unit balls of \(L_1[0,1]\) and \(c_0\) have no extreme points, so neither
+    \(L_1[0,1]\) nor \(c_0\) has the KMP. In particular, no Banach space with the KMP contains a
+    subspace isomorphic to <span class="nobr">\(c_0\).</span> Moreover, \(C(\Delta)\) does not have
+    the KMP either, because it contains an isometric copy of <span class="nobr">\(c_0\).</span></p>
+
+  <p>If you are looking for examples of spaces with the Krein–Milman property, the following result
+    provides plenty.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/lindenstrauss.jpg" alt="Joram Lindenstrauss in 1968" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Lindenstrauss</figcaption>
+      </figure>
+    </div>
+    <p>Joram Lindenstrauss (1936–⁠2012), of the Hebrew University of Jerusalem, was a central figure
+      in Banach space theory.</p>
+  </aside>
+
+  <div class="thm thm-plain env-thm" id="thm:lindenstrauss">
+    <p><span class="thm-head"><span class="thm-name">Theorem 3.4</span>
+      <span class="thm-note">(Lindenstrauss
+      <span class="cite">[<a href="#bib-lindenstrauss1966">14</a>]</span>)</span>.</span> Every
+      Banach space with the Radon–Nikodým property has the Krein–Milman property.</p>
+  </div>
+
+  <p>The proof of this theorem is elegant and direct, and employs techniques that will be useful for
+    our main theorem, so it is worth presenting it in detail. Its most important tool is a variation
+    of the Bishop–Phelps theorem. Let us start by recalling this classical result.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 3.5</span>.</span> Let \(X\) be a
+      Banach space and let \(C\) be a nonempty closed convex subset of
+      <span class="nobr">\(X\).</span> A functional <span class="nobr">\(f \in X^*\),</span>
+      <span class="nobr">\(f \neq 0\),</span> is a <em>support functional</em> of \(C\) if it
+      attains its supremum on <span class="nobr">\(C\),</span> that is, if there exists
+      \(x_0 \in C\) such that
+      \[f(x_0) = \sup_{x \in C} f(x).\]
+      In this case, \(x_0\) is a <em>support point</em> of <span class="nobr">\(C\),</span> and we
+      say that \(f\) <em>supports</em> \(C\) at <span class="nobr">\(x_0\).</span></p>
+  </div>
+
+  <p>When \(C\) is weakly compact, every functional attains its supremum on
+    <span class="nobr">\(C\),</span> so every nonzero functional is a support functional. In
+    general, there are functionals that do not attain their supremum on
+    <span class="nobr">\(C\),</span> but the Bishop–Phelps theorem guarantees that we can always
+    perturb them slightly so that they do.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/phelps.jpg" alt="Robert Phelps" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Phelps</figcaption>
+      </figure>
+    </div>
+    <p>Errett Bishop (1928–⁠1983) and Robert Phelps (1926–⁠2013) proved this theorem in 1963
+      <span class="cite">[<a href="#bib-bishop_phelps1963">3</a>]</span>.</p>
+  </aside>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 3.6</span>
+      <span class="thm-note">(Bishop–Phelps
+      <span class="cite">[<a href="#bib-bishop_phelps1963">3</a>]</span>)</span>.</span> Let \(C\)
+      be a nonempty closed bounded convex subset of a Banach space <span class="nobr">\(X\).</span>
+      Then the set of support functionals of \(C\) is norm-dense in
+      <span class="nobr">\(X^*\).</span></p>
+  </div>
+
+  <p>We will use the Bishop–Phelps theorem in the following form, which strengthens the Hahn–Banach
+    separation theorem: a functional separating a point of \(C\) from a smaller closed convex set
+    can be chosen to attain its supremum on <span class="nobr">\(C\).</span></p>
+
+  <div class="thm thm-plain env-cor" id="cor:bishop-phelps">
+    <p><span class="thm-head"><span class="thm-name">Corollary 3.7</span>.</span> Let \(X\) be a
+      Banach space and let \(B \subseteq C\) be nonempty closed convex subsets of \(X\) such that
+      \(C\) is bounded and <span class="nobr">\(B \neq C\).</span> Then there exist \(f \in X^*\)
+      and \(c' \in C\) such that
+      \[\sup_{b \in B} f(b) &lt; \max_{c \in C} f(c) = f(c').\]</p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> Let <span class="nobr">\(c \in C \setminus B\).</span>
+      By the Hahn–Banach separation theorem, there exists \(h \in X^*\) such that
+      <span class="nobr">\(h(c) > \sup_{b \in B} h(b)\).</span> Let
+      \[\eta = h(c) - \sup_{b \in B} h(b) > 0.\]
+      Let <span class="nobr">\(r = \sup_{x \in C} \|x\|\),</span> which is finite because \(C\) is
+      bounded, and positive because \(C\) contains at least two points. By the Bishop–Phelps
+      theorem, there exists a support functional \(f\) of \(C\) such that
+      <span class="nobr">\(\|f - h\| &lt; \eta/(3r)\).</span> Let \(c' \in C\) be such that
+      <span class="nobr">\(f(c') = \max_{c \in C} f(c)\).</span> Since \(|f(x) - h(x)| &lt; \eta/3\)
+      for every <span class="nobr">\(x \in C\),</span> we get, for every
+      <span class="nobr">\(b \in B\),</span>
+      \[f(b) &lt; h(b) + \frac{\eta}{3} \leq h(c) - \frac{2\eta}{3} &lt; f(c) - \frac{\eta}{3}.\]
+      Taking the supremum over <span class="nobr">\(b \in B\),</span> we get
+      <span class="nobr">\(\sup_{b \in B} f(b) \leq f(c) - \eta/3 &lt; f(c')\).</span><span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <p>Now we can proceed to the proof of <a class="ref" href="#thm:lindenstrauss">Theorem 3.4</a>.
+    First, a preliminary proposition that is of interest in its own right.</p>
+
+  <div class="thm thm-plain env-prop" id="prop:extreme-points-KMP">
+    <p><span class="thm-head"><span class="thm-name">Proposition 3.8</span>.</span> Suppose that
+      every nonempty closed bounded convex subset of a Banach space \(X\) has an extreme point. Then
+      \(X\) possesses the Krein–Milman property.</p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> Let \(C\) be a nonempty closed bounded convex subset
+      of <span class="nobr">\(X\),</span> and let
+      \[E = \co(\ext(C)).\]
+      By assumption, \(C\) has an extreme point, so \(E\) is a nonempty closed convex subset of
+      <span class="nobr">\(C\).</span> Suppose, for a contradiction, that
+      <span class="nobr">\(E \neq C\).</span> By
+      <a class="ref" href="#cor:bishop-phelps">Corollary 3.7</a>, there exist \(f \in X^*\) and
+      \(c' \in C\) such that
+      \[f(e) &lt; \max_{c \in C} f(c) = f(c') \quad \text{for every } e \in E.\]
+      Let
+      \[K = \{ x \in C : f(x) = f(c') \}.\]
+      By the choice of \(f\) and <span class="nobr">\(c'\),</span> the set \(K\) is nonempty,
+      closed, bounded and convex, so by assumption it has an extreme point
+      <span class="nobr">\(x\).</span></p>
+    <p>We claim that \(x\) is also an extreme point of <span class="nobr">\(C\).</span> First, \(K\)
+      is extremal in <span class="nobr">\(C\):</span> if \(y, z \in C\) and \(ty + (1-t)z \in K\)
+      for some <span class="nobr">\(t \in (0,1)\),</span> then
+      \[t f(y) + (1-t) f(z) = f(c'),\]
+      and since <span class="nobr">\(f(y), f(z) \leq f(c')\),</span> this forces
+      <span class="nobr">\(f(y) = f(z) = f(c')\),</span> that is,
+      <span class="nobr">\(y, z \in K\).</span> Now let \(y, z \in C\) and \(t \in (0,1)\) be such
+      that <span class="nobr">\(ty + (1-t)z = x\).</span> Since \(x \in K\) and \(K\) is extremal in
+      <span class="nobr">\(C\),</span> we get <span class="nobr">\(y, z \in K\),</span> and since
+      \(x\) is an extreme point of <span class="nobr">\(K\),</span> we get
+      <span class="nobr">\(y = z = x\).</span> This proves the claim.</p>
+    <p>Therefore <span class="nobr">\(x \in \ext(C) \subseteq E\),</span> so
+      <span class="nobr">\(f(x) &lt; f(c')\),</span> which contradicts
+      <span class="nobr">\(x \in K\).</span> Hence <span class="nobr">\(E = C\),</span> and \(X\)
+      has the KMP.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <div class="thm thm-remark env-rem">
+    <p><span class="thm-head"><span class="thm-name">Remark</span>.</span> Hence the KMP is
+      equivalent to the property that every nonempty closed bounded convex subset has an extreme
+      point.</p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof of
+      <a class="ref" href="#thm:lindenstrauss">Theorem 3.4</a>.</span> By
+      <a class="ref" href="#prop:extreme-points-KMP">Proposition 3.8</a>, it suffices to show that
+      every nonempty closed bounded convex subset \(C\) of \(X\) has an extreme point. Since \(X\)
+      has the RNP, every nonempty bounded subset of \(X\) is dentable; in particular, so are \(C\)
+      and each of its nonempty subsets.</p>
+    <p>Let <span class="nobr">\(\varepsilon > 0\).</span> We construct inductively a decreasing
+      sequence \((C_n)\) of nonempty closed bounded convex subsets of
+      <span class="nobr">\(C\),</span> together with functionals
+      <span class="nobr">\(f_n \in X^*\),</span> as follows. Let
+      <span class="nobr">\(C_0 = C\),</span> and suppose that \(C_{n-1}\) has already been
+      constructed for some <span class="nobr">\(n \in \N\).</span> Since \(C_{n-1}\) is dentable,
+      there exists \(x_n \in C_{n-1}\) such that
+      \[x_n \notin \co\big(C_{n-1} \setminus B(x_n, \varepsilon / 2^n)\big) = D_n.\]
+      If \(D_n\) is empty, then
+      <span class="nobr">\(C_{n-1} \subseteq B(x_n, \varepsilon / 2^n)\),</span> and we let
+      \(C_n = C_{n-1}\) and <span class="nobr">\(f_n = 0\).</span> Otherwise, \(D_n\) is a nonempty
+      closed convex subset of \(C_{n-1}\) different from <span class="nobr">\(C_{n-1}\),</span> so
+      by <a class="ref" href="#cor:bishop-phelps">Corollary 3.7</a> there exist \(f_n \in X^*\) and
+      \(c_n \in C_{n-1}\) such that
+      \[f_n(d) &lt; \max_{c \in C_{n-1}} f_n(c) = f_n(c_n) \quad \text{for every } d \in D_n.\]
+      In this case, let
+      \[C_n = \{ c \in C_{n-1} : f_n(c) = f_n(c_n) \}.\]
+      In both cases, \(C_n\) is a nonempty closed bounded convex subset of \(C_{n-1}\) such that
+      \[f_n(c) = \max_{C_{n-1}} f_n \quad \text{for every } c \in C_n.\]
+      Moreover, \(C_n\) is disjoint from <span class="nobr">\(D_n\),</span> and in particular from
+      <span class="nobr">\(C_{n-1} \setminus B(x_n, \varepsilon / 2^n)\),</span> so that
+      \[\operatorname{diam} C_n \leq \operatorname{diam} B(x_n, \varepsilon /2^{n})=\frac{\varepsilon}{2^{n-1}}.\]</p>
+    <p>Since \((C_n)\) is a decreasing sequence of nonempty closed subsets of the Banach space \(X\)
+      whose diameters tend to zero, there exists \(x \in X\) such that
+      \[\bigcap_{n \in \N} C_n = \{x\}.\]
+      We claim that \(x\) is an extreme point of <span class="nobr">\(C\).</span> Let \(y, z \in C\)
+      be such that <span class="nobr">\(x = (y + z)/2\).</span> We show by induction that
+      \(y, z \in C_n\) for every <span class="nobr">\(n \geq 0\).</span> This is clear for
+      <span class="nobr">\(n = 0\).</span> If <span class="nobr">\(y, z \in C_{n-1}\),</span> then,
+      since <span class="nobr">\(x \in C_n\),</span>
+      \[\max_{C_{n-1}} f_n = f_n(x) = \frac{f_n(y) + f_n(z)}{2},\]
+      and since <span class="nobr">\(f_n(y), f_n(z) \leq \max_{C_{n-1}} f_n\),</span> this forces
+      <span class="nobr">\(f_n(y) = f_n(z) = \max_{C_{n-1}} f_n\),</span> that is,
+      <span class="nobr">\(y, z \in C_n\).</span> Hence
+      <span class="nobr">\(y, z \in \bigcap_n C_n = \{x\}\),</span> so
+      <span class="nobr">\(y = z = x\),</span> and \(x\) is an extreme point of
+      <span class="nobr">\(C\).</span><span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <p>All the examples of spaces with the RNP in the previous section are also examples of spaces
+    with the KMP. Can we find other examples? According to F. Albiac and N. J. Kalton
+    <span class="cite">[<a href="#bib-albiac_kalton2016">1</a>, p. 131]</span>:</p>
+
+  <blockquote>
+    <p>The converse [to <a class="ref" href="#thm:lindenstrauss">Theorem 3.4</a>] remains the major
+      open problem in this area […] It is probably fair to say that the subject has received
+      relatively little attention since the 1980s, and some really new ideas seem to be necessary to
+      make further progress.</p>
+  </blockquote>
+
+  <p>There are, however, important partial converses.</p>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 3.9</span>
+      <span class="thm-note">(Huff–Morris
+      <span class="cite">[<a href="#bib-huff_morris1975">12</a>]</span>)</span>.</span> A dual
+      Banach space \(X^*\) has the RNP if and only if it has the KMP.</p>
+  </div>
+
+  <div class="thm thm-plain env-thm">
+    <p><span class="thm-head"><span class="thm-name">Theorem 3.10</span>
+      <span class="thm-note">(Schachermayer
+      <span class="cite">[<a href="#bib-schachermayer1985">19</a>]</span>)</span>.</span> Let \(X\)
+      be a Banach space that is isomorphic to its square <span class="nobr">\(X \oplus X\).</span>
+      Then \(X\) has the RNP if and only if it has the KMP.</p>
+  </div>
+
+  <p>The goal of the main paper
+    <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span> is to add Banach
+    lattices to the list of spaces in which the KMP implies the RNP.</p>
+</section>
+
+<section class="sec" aria-labelledby="sec:banach-lattices-h">
+  <h2 id="sec:banach-lattices-h"><a class="sec-anchor" id="sec:banach-lattices" href="#sec:banach-lattices"><span class="secnum">4.</span>
+    Banach lattices</a></h2>
+
+  <p>Recall the definition of a Banach lattice.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/riesz.jpg" alt="Frigyes Riesz" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Riesz</figcaption>
+      </figure>
+    </div>
+    <p>Frigyes Riesz (1880–⁠1956) introduced vector lattices in his address to the International
+      Congress of Mathematicians in Bologna in 1928.</p>
+  </aside>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 4.1</span>.</span> A <em>Banach
+      lattice</em> is a real Banach space \(E\) equipped with a partial order \(\leq\) such that,
+      for every <span class="nobr">\(x,y \in E\),</span></p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>\(x \leq y\) implies \(x + z \leq y + z\) for every
+          <span class="nobr">\(z \in E\);</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>\(x \leq y\) implies \(\lambda x \leq \lambda y\) for every
+          <span class="nobr">\(\lambda \geq 0\);</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p>the supremum \(x \vee y\) and the infimum \(x \wedge y\) exist;</p>
+      </li>
+      <li>
+        <span class="enum-label">(iv)</span>
+        <p>if <span class="nobr">\(|x|\le |y|\),</span> where
+          <span class="nobr">\(|x|=x\vee (-x)\),</span> then
+          <span class="nobr">\(\|x\|\le \|y\|\).</span></p>
+      </li>
+    </ol>
+  </div>
+
+  <p>Many classical Banach spaces are Banach lattices in a natural way. For instance, this is the
+    case for spaces of continuous functions, with the pointwise order, and for \(L_p\) spaces, with
+    the order defined pointwise almost everywhere. In fact, every identity involving the order and
+    the linear operations of a Banach lattice holds as long as it holds for real numbers
+    <span class="cite">[<a href="#bib-meyer-nieberg1991">16</a>, Theorem 2.1.20]</span>. This is a
+    remarkable fact of the theory that is very useful in practice.</p>
+
+  <p>There is a well-developed theory of Banach lattices
+    <span class="cite">[<a href="#bib-aliprantis_burkinshaw2006">2</a>,
+    <a href="#bib-lindenstrauss_tzafriri1979">15</a>, <a href="#bib-meyer-nieberg1991">16</a>,
+    <a href="#bib-schaefer1974">20</a>]</span>. Some of its most beautiful and deepest results
+    relate order-theoretic properties of a Banach lattice to purely linear properties coming from
+    Banach space theory. They show that the order structure is not merely built on top of the linear
+    structure, but that it also has an influence on the linear structure itself. Sometimes we even
+    find statements that make sense in every Banach space, because they only involve linear
+    properties, and that can be proved for Banach lattices but are false, or not known to be true,
+    for general Banach spaces. The main theorem we want to explore, namely that the RNP and the KMP
+    are equivalent in Banach lattices, is a result of this kind.</p>
+
+  <p>We will now present some preliminary facts about Banach lattices that will be used in the main
+    construction. Not surprisingly, along the way, we will find several instances of results that
+    relate linear and order properties. We will start with the notion of order continuity, which
+    captures when convergence in order implies convergence in norm.</p>
+
+  <div class="thm thm-definition env-defn" id="defn:order-continuous">
+    <p><span class="thm-head"><span class="thm-name">Definition 4.2</span>.</span> A Banach lattice
+      \(E\) is <em>order continuous</em> (or has an <em>order continuous norm</em>) if, whenever
+      \((x_\alpha)\) is a decreasing net in \(E\) with
+      <span class="nobr">\(\inf_\alpha x_\alpha =0\),</span>
+      <span class="nobr">\(\lim_\alpha \|x_\alpha \|=0\).</span></p>
+  </div>
+
+  <p>For example, the spaces \(c_0\) and <span class="nobr">\(L_p(\mu )\),</span> for any measure
+    \(\mu\) and <span class="nobr">\(1\le p&lt;\infty\),</span> are order continuous; however,
+    \(\ell_\infty\) is not.</p>
+
+  <p>It turns out that being order continuous admits several equivalent characterizations, including
+    a purely linear one. Remember that a set in a Banach lattice is said to be order bounded if it
+    is contained in an order interval.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <p>Hidegorô Nakano (1909–⁠1974) was, with Tôzirô Ogasawara and Kôsaku Yosida, one of the
+      founders of the Japanese school of vector and Banach lattices.</p>
+  </aside>
+
+  <div class="thm thm-plain env-thm" id="thm:order-continuity">
+    <p><span class="thm-head"><span class="thm-name">Theorem 4.3</span>
+      <span class="thm-note">(Nakano)</span>.</span> For a Banach lattice
+      <span class="nobr">\(E\),</span> the following are equivalent:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>\(E\) is order continuous.</p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>Every order interval of \(E\) is weakly compact.</p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p>Every monotone order bounded net in \(E_+\) is norm convergent (to its
+          supremum/infimum).</p>
+      </li>
+      <li>
+        <span class="enum-label">(iv)</span>
+        <p>Every monotone order bounded sequence in \(E_+\) is norm convergent (to its
+          supremum/infimum).</p>
+      </li>
+      <li>
+        <span class="enum-label">(v)</span>
+        <p>The canonical embedding of \(E\) into its bidual \(E^{* *}\) embeds \(E\) as an order
+          ideal in <span class="nobr">\(E^{* *}\).</span></p>
+      </li>
+    </ol>
+  </div>
+
+  <p>There is also a local version of the previous result that will be useful in the main proof.</p>
+
+  <div class="thm thm-plain env-thm" id="thm:local-order-cont">
+    <p><span class="thm-head"><span class="thm-name">Theorem 4.4</span>
+      <span class="thm-note">(<span class="cite">[<a href="#bib-meyer-nieberg1991">16</a>,
+      Theorem 3.4.4]</span>)</span>.</span> For a positive vector \(u\) in a Banach lattice
+      <span class="nobr">\(E\),</span> the following are equivalent:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>Every monotone net in \([0,u]\) is norm convergent (to its supremum/<wbr>infimum).</p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>\([0,u]\) is weakly compact.</p>
+      </li>
+    </ol>
+  </div>
+
+  <p>Condition (iv) in <a class="ref" href="#thm:order-continuity">Theorem 4.3</a> asks increasing
+    sequences to converge when they are <em>order</em> bounded. What happens if we only ask them to
+    be <em>norm</em> bounded? In <span class="nobr">\(L_1(\mu )\),</span> for instance, such
+    sequences do converge, by the Monotone Convergence Theorem. This suggests the following
+    definition.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/kantorovich.jpg" alt="Leonid Kantorovich in 1975" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Kantorovich</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/portraits/banach.jpg" alt="Stefan Banach" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Banach</figcaption>
+      </figure>
+    </div>
+    <p>Leonid Kantorovich (1912–⁠1986), whose school was the first to combine order and norm, also
+      shared the 1975 Nobel Prize in Economics. Stefan Banach (1892–⁠1945) founded the theory of
+      Banach spaces.</p>
+  </aside>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 4.5</span>.</span> A Banach lattice
+      \(E\) is a <em>KB-space</em> (after Kantorovich and Banach) if every increasing norm bounded
+      sequence in \(E_+\) is norm convergent.</p>
+  </div>
+
+  <p>Since an order bounded sequence \(0 \leq x_n \leq x\) is norm bounded by
+    <span class="nobr">\(\|x\|\),</span> <a class="ref" href="#thm:order-continuity">Theorem 4.3</a>
+    shows that every KB-space is order continuous. The converse fails, as \(c_0\) shows.</p>
+
+  <p>As with order continuity, being a KB-space also admits a purely linear characterization.</p>
+
+  <div class="thm thm-plain env-thm" id="thm:KB">
+    <p><span class="thm-head"><span class="thm-name">Theorem 4.6</span>
+      <span class="thm-note">(<span class="cite">[<a href="#bib-aliprantis_burkinshaw2006">2</a>,
+      Theorem 4.60]</span>)</span>.</span> For a Banach lattice <span class="nobr">\(E\),</span> the
+      following are equivalent:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>\(E\) is a KB-space.</p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>\(c_0\) is not lattice embeddable in <span class="nobr">\(E\).</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p>\(c_0\) is not embeddable in <span class="nobr">\(E\).</span></p>
+      </li>
+    </ol>
+  </div>
+
+  <p>In particular, if a Banach lattice contains a copy of <span class="nobr">\(c_0\),</span> then
+    it also contains a copy of \(c_0\) that respects the order structure.</p>
+
+  <p>Going back to the RNP, Ghoussoub and Talagrand provided yet another characterization of this
+    property, this time using the order structure of Banach lattices. Recall that, in a Banach
+    space, a set is <em>dentable</em> if it has slices of arbitrarily small diameter. In a Banach
+    lattice, there is another natural way of measuring how “small” a positive element is, which uses
+    the order. An element \(u \in E_+\) is a <em>quasi-interior point</em> of \(E\) if
+    \[\lim_{n \to \infty} \|x - x \wedge nu\| = 0 \quad \text{for every } x \in E_+.\]
+    If \(u\) is a quasi-interior point and \(x \in E_+\) satisfies
+    <span class="nobr">\(x \wedge u = 0\),</span> then \(x \wedge nu \leq n (x \wedge u) = 0\) for
+    every <span class="nobr">\(n \in \N\),</span> so <span class="nobr">\(x = 0\).</span> Thus, for
+    <span class="nobr">\(x \in E_+\),</span> the quantity
+    <span class="nobr">\(\|x \wedge u\|\),</span> which measures the part of \(x\) that lies below
+    <span class="nobr">\(u\),</span> is a weak way of measuring how far \(x\) is from
+    <span class="nobr">\(0\).</span> It may be much smaller than
+    <span class="nobr">\(\|x\|\):</span> in \(L_1[0,1]\) with
+    <span class="nobr">\(u = \chi_{[0,1]}\),</span> the “spike” \(x = n \chi_{[0, 1/n]}\) has
+    \(\|x\|_1 = 1\) but <span class="nobr">\(\|x \wedge u\|_1 = 1/n\).</span></p>
+
+  <p>A set of positive elements is order dentable if it has a slice that stays away from \(0\) in
+    this weak sense. Equivalently (see the remark below), it cannot be recovered, by taking closed
+    convex hulls, from its elements that are arbitrarily close to \(0\) in this weak sense, such as
+    the spikes above. Ghoussoub and Talagrand were motivated by martingales: if a bounded closed
+    convex set is not order dentable, one can build a martingale with values in it that is
+    hopelessly divergent, and so the RNP fails
+    <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>, Lemma 2]</span>.</p>
+
+  <div class="thm thm-definition env-defn">
+    <p><span class="thm-head"><span class="thm-name">Definition 4.7</span>.</span> Let \(E\) be a
+      Banach lattice with a quasi-interior point <span class="nobr">\(u\),</span> and for
+      \(n \in \N\) let
+      \[H_n = \{ x \in E_+ : \|x \wedge u\| \geq 1/n \}.\]
+      A nonempty bounded set \(A \subseteq E_+\) is <em>order dentable</em> if there exist
+      <span class="nobr">\(f \in E^*\),</span> \(\alpha > 0\) and \(n \in \N\) such that
+      \[S(A, f, \alpha) \subseteq H_n.\]
+      A Banach lattice \(E\) is <em>order dentable</em> if, for every closed sublattice \(F\) of
+      \(E\) with a quasi-interior point, every closed bounded convex set \(C \subseteq F_+\) with
+      \(C \neq \{0\}\) is order dentable in <span class="nobr">\(F\).</span></p>
+  </div>
+
+  <div class="thm thm-remark env-rem">
+    <p><span class="thm-head"><span class="thm-name">Remark</span>.</span> Order dentability can
+      also be formulated in terms of closed convex hulls, which is the original formulation of
+      <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>]</span>. Let
+      \(A \subseteq E_+\) be nonempty and bounded. Then \(A\) is order dentable if and only if there
+      exists \(n \in \N\) such that
+      \[A \not\subseteq \overline{\mathrm{co}}(A \setminus H_n),\]
+      that is, if \(A\) cannot be recovered, by taking closed convex hulls, from its elements \(y\)
+      with <span class="nobr">\(\|y \wedge u\| &lt; 1/n\).</span> When \(A\) is closed and convex,
+      since the sets \(A \setminus H_n\) decrease with <span class="nobr">\(n\),</span> this is the
+      same as saying that
+      \[A \neq \bigcap_{n \in \N} \overline{\mathrm{co}}(A \setminus H_n).\]
+      The proof is the same as in the remark on slices in
+      <a class="ref" href="#sec:RNP">Section 2</a>. Suppose first that
+      <span class="nobr">\(S(A, f, \alpha) \subseteq H_n\).</span> Then
+      \[A \setminus H_n \subseteq A \setminus S(A, f, \alpha) \subseteq \{ y \in E : f(y) \leq M(A, f) - \alpha \}.\]
+      The right-hand side is closed and convex, so it also contains
+      <span class="nobr">\(\overline{\mathrm{co}}(A \setminus H_n)\),</span> and therefore no point
+      of the (nonempty) slice \(S(A, f, \alpha)\) belongs to
+      <span class="nobr">\(\overline{\mathrm{co}}(A \setminus H_n)\).</span></p>
+    <p>Conversely, let \(n \in \N\) and \(x \in A\) be such that
+      <span class="nobr">\(x \notin C = \overline{\mathrm{co}}(A \setminus H_n)\).</span> If \(C\)
+      is empty, then <span class="nobr">\(A \subseteq H_n\),</span> and every slice of \(A\) is
+      contained in <span class="nobr">\(H_n\).</span> Otherwise, by the Hahn–Banach separation
+      theorem there exists \(f \in E^*\) such that
+      \[f(x) > \beta = \sup_{y \in C} f(y).\]
+      Let <span class="nobr">\(\alpha = M(A, f) - \beta\),</span> which is positive because
+      <span class="nobr">\(M(A, f) \geq f(x) > \beta\).</span> Then
+      \(S(A, f, \alpha) = \{ y \in A : f(y) > \beta \}\) is disjoint from
+      <span class="nobr">\(A \setminus H_n\),</span> that is,
+      <span class="nobr">\(S(A, f, \alpha) \subseteq H_n\).</span></p>
+  </div>
+
+  <p>The notion of order dentable set does not depend on the choice of the quasi-interior point
+    \(u\) <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>, Lemma 1]</span>.
+    Moreover, it is enough to check the definition of order dentable Banach lattice for separable
+    closed sublattices <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>,
+    Proposition 1]</span>.</p>
+
+  <p>The space \(c_0\) is order dentable
+    <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>, p. 218]</span>, even though
+    it fails the RNP. This explains the extra condition in the following theorem.</p>
+
+  <div class="thm thm-plain env-thm" id="thm:ghoussoub-talagrand">
+    <p><span class="thm-head"><span class="thm-name">Theorem 4.8</span>
+      <span class="thm-note">(Ghoussoub–Talagrand
+      <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>,
+      Theorem 2]</span>)</span>.</span> For a Banach lattice <span class="nobr">\(E\),</span> the
+      following are equivalent:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>\(E\) has the RNP.</p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>\(E\) is order dentable and \(c_0\) is not lattice embeddable in
+          <span class="nobr">\(E\).</span></p>
+      </li>
+    </ol>
+  </div>
+
+  <p>By <a class="ref" href="#thm:KB">Theorem 4.6</a>, condition (ii) can be equivalently stated as:
+    \(E\) is an order dentable KB-space.</p>
+
+  <p>After these ((very) long) preliminaries, we are now ready to present the construction of
+    <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span>.</p>
+</section>
+
+<section class="sec" aria-labelledby="sec:main-h">
+  <h2 id="sec:main-h"><a class="sec-anchor" id="sec:main" href="#sec:main"><span class="secnum">5.</span>
+    The main theorem</a></h2>
+
+  <p>In <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span>, Bourgain and
+    Talagrand provide two proofs of the following theorem.</p>
+
+  <aside class="margin-history" aria-label="Historical note">
+    <div class="mh-portraits">
+      <figure>
+        <img src="assets/portraits/bourgain.jpg" alt="Jean Bourgain" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Bourgain</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/portraits/talagrand.jpg" alt="Michel Talagrand" width="320" height="320" loading="lazy" decoding="async">
+        <figcaption>Talagrand</figcaption>
+      </figure>
+    </div>
+    <p>Jean Bourgain (1954–⁠2018) was a professor at the Vrije Universiteit Brussel, and Michel
+      Talagrand (born 1952) a researcher at the CNRS in Paris, when they wrote this paper. Bourgain
+      received the Fields Medal in 1994, and Talagrand the Abel Prize in 2024.</p>
+  </aside>
+
+  <div class="thm thm-plain env-thm" id="thm:main">
+    <p><span class="thm-head"><span class="thm-name">Theorem 5.1</span>.</span> In a Banach lattice,
+      the Radon–Nikodým property and the Krein–Milman property are equivalent.</p>
+  </div>
+
+  <p>Remember that the RNP always implies the KMP
+    (<a class="ref" href="#thm:lindenstrauss">Theorem 3.4</a>). Hence the content of the theorem
+    lies in the reverse implication. The first proof builds on
+    <a class="ref" href="#thm:bourgain">Theorem 2.17</a>.</p>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof 1.</span> Suppose that \(E\) is a Banach lattice with the
+      Krein–Milman property. Since \(E\) has the KMP, it cannot contain
+      <span class="nobr">\(c_0\).</span> Hence, according to
+      <a class="ref" href="#thm:KB">Theorem 4.6</a>, it must be a KB-space, and therefore \(E\) sits
+      as an order ideal in its bidual (<a class="ref" href="#thm:order-continuity">Theorem 4.3</a>).
+      According to <a class="ref" href="#thm:bourgain">Theorem 2.17</a>, if \(E\) fails the RNP,
+      then there exists a nonempty bounded closed convex set \(C\) of \(E\) that does not contain
+      any extreme point of its weak\(^*\) closure \(\overline{C}^{w^*}\) in
+      <span class="nobr">\(E^{* *}\).</span> In fact, it follows from
+      <span class="cite">[<a href="#bib-bourgain1978">5</a>,
+      <a href="#bib-ghoussoub_talagrand1979">10</a>]</span> that the set \(C\) may be taken to be in
+      <span class="nobr">\(E_+\).</span> This can be justified by noting that positive martingales
+      suffice to test the RNP: if every \(L_1\)-bounded martingale with values in \(E_+\) converges
+      almost everywhere, then \(E\) has the RNP
+      <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>, Lemma 3]</span>. The reason
+      is that, in a Banach lattice that does not contain <span class="nobr">\(c_0\),</span> every
+      \(L_1\)-bounded martingale is the difference of two positive \(L_1\)-bounded martingales. One
+      then uses the construction of <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span> in
+      <span class="nobr">\(E_+\).</span> However, these details would require a whole paper of their
+      own, and since the goal of
+      <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span> is to give a
+      simplified proof using an order-theoretic approach, there is no point in delving deeper.</p>
+    <p>Granting this, it is not difficult to finish the proof. The set
+      <span class="nobr">\(C\),</span> being closed and convex, is weakly closed by Mazur’s theorem.
+      Since the weak topology of \(E\) is the same, by definition, as the weak\(^*\) topology of
+      \(E^{* *}\) when restricted to <span class="nobr">\(E\),</span> it follows that
+      <span class="nobr">\(\overline{C}^{w^{*}}\cap E=C\).</span> Now the fact that the elements of
+      \(C\) are positive implies
+      <span class="nobr">\(\ext(C)\subseteq \ext(\overline{C}^{w^{*}})\):</span> if
+      <span class="nobr">\(x \in \ext(C)\),</span> and \(x=(y+z)/2\) for some
+      <span class="nobr">\(y,z \in \overline{C}^{w^{*}}\subseteq E^{* *}_+\),</span> then
+      \(0\le y\le 2x\) and <span class="nobr">\(0\le z\le 2x\).</span> Since \(E\) is an order ideal
+      in <span class="nobr">\(E^{* *}\),</span> we get
+      <span class="nobr">\(y,z \in E\cap \overline{C}^{w^{*}}=C\),</span> and therefore
+      <span class="nobr">\(x=y=z\).</span> Thus
+      <span class="nobr">\(\ext(C)\subseteq \ext(\overline{C}^{w^{*}})\cap E\),</span> which is
+      empty by assumption. This contradicts the Krein–Milman
+      property.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <p>As we have seen, this proof relies heavily on the construction of
+    <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span>. However, according to the
+    authors,</p>
+
+  <blockquote>
+    <p>The techniques of <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span> are, however,
+      rather delicate, and they simplify notably if one uses the order techniques introduced in
+      <span class="cite">[<a href="#bib-ghoussoub1982">11</a>]</span>, although the principle of the
+      construction is unchanged. It therefore seemed to us that this approach has an interest of its
+      own.</p>
+  </blockquote>
+
+  <p>This new construction requires five preparatory lemmas, several of which may be of independent
+    interest. Some of them deal with weakly compact intervals. This is natural: we will be working
+    with Banach lattices that have the KMP, hence do not contain <span class="nobr">\(c_0\);</span>
+    in particular, they have weakly compact intervals. The first lemma has to do with the geometry
+    of order continuous Banach lattices.</p>
+
+  <div class="thm thm-plain env-lem" id="lem:1">
+    <p><span class="thm-head"><span class="thm-name">Lemma 5.2</span>
+      <span class="thm-note">(Ghoussoub
+      <span class="cite">[<a href="#bib-ghoussoub1982">11</a>]</span>)</span>.</span> Let \(E\) be a
+      Banach lattice, and let \(u \in E_+\) be such that \([0,u]\) is weakly compact. Then \(0\) is
+      a dentable point of <span class="nobr">\([0,u]\).</span></p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> From the original proof: “We shall take pains to give
+      an elementary one.” Assume <span class="nobr">\(u\neq 0\),</span> for otherwise the result is
+      trivial. The proof has the following steps:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>First, show that there exists \(v \in [0,u]\) different from zero and such that \(0\) is
+          dentable in <span class="nobr">\([0,v]\).</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>Second, show that the set \(A\) of those \(v \in [0,u]\) such that \(0\) is dentable in
+          \([0,v]\) is upward directed (and nonempty because of <i>(i)</i>).</p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p>Show that the supremum of \(A\) must be <span class="nobr">\(u\),</span> and that it must
+          belong to <span class="nobr">\(A\).</span></p>
+      </li>
+    </ol>
+    <p>To prove <i>(i)</i>, first we need to show that, for every
+      <span class="nobr">\(\varepsilon >0\),</span> there exists \(v \in [0,u]\) such that
+      \(\|v\|\ge \|u\|-\varepsilon\) and
+      <span class="nobr">\(0\not\in \co([0,v]\setminus B(0,\varepsilon ))\).</span> Note that this
+      is very similar to saying that \(0\) is dentable in some interval, but letting the interval
+      vary with <span class="nobr">\(\varepsilon\);</span> later we shall take the biggest of these
+      intervals.</p>
+    <p>Suppose this were not true for some <span class="nobr">\(\varepsilon >0\).</span> Then we
+      could construct a decreasing sequence \((v_n)\) with
+      <span class="nobr">\(v_n \in [0,u]\),</span> \(\|v_n\|\ge \|u\|-\varepsilon (1-2^{-n})\) and
+      <span class="nobr">\(\|v_n - v_{n+1}\|\ge \varepsilon\).</span> Indeed, set
+      <span class="nobr">\(v_0=u\),</span> and suppose that \(v_n\) has already been constructed.
+      Then, by assumption,
+      <span class="nobr">\(0\in \co([0,v_n]\setminus B(0,\varepsilon ))\),</span> so there exist
+      finitely many <span class="nobr">\(x_i \in [0,v_n]\),</span> with
+      <span class="nobr">\(\|x_i\|\ge \varepsilon\),</span> and positive scalars \(\lambda _i\) with
+      <span class="nobr">\(\sum_{i}^{}\lambda _i=1\),</span> such that
+      <span class="nobr">\(\big\|\sum_{i}^{}\lambda _ix_i\big\|\le \varepsilon 2^{-n-1}\).</span>
+      Thus, since <span class="nobr">\(v_n\ge \sum_{i}^{}\lambda _i x_i\),</span>
+      <span class="nobr">\(\big\|v_n - \sum_{i}^{}\lambda _ix_i\big\|\ge \|v_n\|-\varepsilon 2^{-n-1}\),</span>
+      which readily implies that there must exist at least one \(x_i\) for which
+      <span class="nobr">\(\|v_n - x_i\|\ge \|v_n\|-\varepsilon 2^{-n-1}\).</span> Setting
+      \(v_{n+1}=v_n-x_i\) completes the construction, since
+      <span class="nobr">\(v_{n+1}\le v_n\),</span>
+      \[\|v_{n+1}\|\ge \|v_n\|-\varepsilon 2^{-n-1}\ge \|u\|-\varepsilon (1-2^{-n}+2^{-n-1})=\|u\|-\varepsilon (1-2^{-n-1}),\]
+      and <span class="nobr">\(\|v_n - v_{n+1}\|=\|x_i\|\ge \varepsilon\).</span> But then the
+      sequence \((v_n)\) is not convergent, contradicting the fact that \([0,u]\) is weakly compact
+      and <a class="ref" href="#thm:local-order-cont">Theorem 4.4</a>.</p>
+    <p>We have thus proved that for every <span class="nobr">\(\varepsilon >0\),</span> there exists
+      \(v \in [0,u]\) such that \(\|v\|\ge \|u\|-\varepsilon\) and
+      <span class="nobr">\(0\not\in \co([0,v]\setminus B(0,\varepsilon ))\).</span> This makes it
+      possible to construct a decreasing sequence \((v_n)\) in \([0,u]\) such that
+      \(\|v_n\|\ge \|u\|-\frac{1}{2}(1-2^{-n})\|u\|\) and
+      \(0 \not\in \co([0,v_n]\setminus B(0,2^{-n}))\) for <span class="nobr">\(n \geq 1\).</span>
+      Indeed, start with \(v_0=u\) and, if \(v_n\) has been constructed, apply the fact that we have
+      proved to the interval \([0,v_{n}]\) (which is weakly compact, being a weakly closed subset of
+      <span class="nobr">\([0,u]\))</span> with
+      <span class="nobr">\(\varepsilon =\min\{2^{-n-1},2^{-n-2}\|u\|\}\):</span> there exists
+      \(v_{n+1}\in [0,v_n]\) with \(0 \not\in \co([0,v_{n+1}]\setminus B(0,2^{-n-1}))\) and such
+      that
+      \[\|v_{n+1}\|\ge \|v_n\|-\varepsilon \ge \|u\|-\frac{1}{2}(1-2^{-n})\|u\|-\varepsilon \ge \|u\|-\frac{1}{2}(1-2^{-n-1})\|u\|.\]
+      If <span class="nobr">\(v=\lim_n v_n\),</span> which exists by
+      <a class="ref" href="#thm:local-order-cont">Theorem 4.4</a>, and in fact is the infimum of
+      <span class="nobr">\((v_n)\),</span> then \(\|v\|\ge \frac{1}{2}\|u\|\) and \(0\) is dentable
+      in <span class="nobr">\([0,v]\).</span> This completes step <i>(i)</i> of the proof.</p>
+    <p>To proceed to step <i>(ii)</i>, let \(A\) be the set of those \(v \in [0,u]\) such that \(0\)
+      is dentable in <span class="nobr">\([0,v]\).</span> In <i>(i)</i>, we proved that this set is
+      nonempty. Let us show that it is upward directed for the order inherited from
+      <span class="nobr">\(E\).</span> Suppose that \(v_1,v_2 \in [0,u]\) are such that \(0\) is
+      dentable both in \([0,v_1]\) and <span class="nobr">\([0,v_2]\).</span> We first show that
+      \(0\) is also dentable in <span class="nobr">\([0,v_1+v_2]\).</span> Let
+      <span class="nobr">\(\varepsilon > 0\).</span> Recall that, by the Riesz decomposition
+      theorem, every \(x \in [0,v_1+v_2]\) can be decomposed as \(x=x_1+x_2\) with
+      \(x_1 \in [0,v_1]\) and <span class="nobr">\(x_2 \in [0,v_2]\).</span> Moreover,
+      <span class="nobr">\(\|x\|\le 2\max(\|x_1\|,\|x_2\|)\).</span> It follows that
+      \[\begin{align*} [0, v_1+v_2]\setminus B(0,2\varepsilon )&\subseteq ([0,v_1]\setminus B(0,\varepsilon )+[0,v_2]) \\
+        &\qquad \cup ([0,v_1]+[0,v_2]\setminus B(0,\varepsilon ))\\
+        &\subseteq \co(\co([0,v_1]\setminus B(0,\varepsilon ))+[0,v_2]) \\
+        &\qquad \cup ([0,v_1]+\co([0,v_2]\setminus B(0,\varepsilon ))). \end{align*}\]
+      Since <span class="nobr">\(0\not\in \co([0,v_i]\setminus B(0,\varepsilon ))\),</span> for
+      <span class="nobr">\(i=1,2\),</span> the previous chain of inclusions implies that \(0\) is a
+      dentable point of <span class="nobr">\([0,v_1+v_2]\).</span> Since \(0\) is then also dentable
+      in \([0,v']\) for every <span class="nobr">\(v' \in [0,v_1+v_2]\),</span> it is dentable in
+      <span class="nobr">\([0,v_1 \vee v_2]\),</span> and \(v_1 \vee v_2 \in [0,u]\) is an upper
+      bound of \(v_1\) and <span class="nobr">\(v_2\).</span> Hence \(A\) is upward directed.</p>
+    <p>Therefore, we can think of \(A\) as an increasing net. By
+      <a class="ref" href="#thm:local-order-cont">Theorem 4.4</a>, it converges to its supremum
+      <span class="nobr">\(w\).</span> We have thus reached step <i>(iii)</i> of the proof. Let us
+      show that <span class="nobr">\(w \in A\),</span> that is, that \(0\) is a dentable point of
+      <span class="nobr">\([0,w]\).</span> Let \(\varepsilon >0\) be small enough (otherwise the
+      argument is vacuous). Since \(w\) is also the limit of <span class="nobr">\(A\),</span> there
+      exists \(v \in A\) such that <span class="nobr">\(\|w-v\|&lt;\varepsilon\).</span> Now let
+      \(x_i \in [0,w]\) be finitely many elements with
+      <span class="nobr">\(\|x_i\|\ge 2\varepsilon\),</span> and let \(\alpha _i\) be positive
+      numbers with <span class="nobr">\(\sum_{i}^{}\alpha _i=1\).</span> Note that
+      \[\|x_i \wedge v\|\ge \|x_i\|- \|x_i-x_i \wedge v\|\ge 2\varepsilon -\|w-v\|\ge \varepsilon,\]
+      where we are using that
+      \[0 \leq x_i - x_i \wedge v = (x_i - v)_+ \leq (w - v)_+ = w - v,\]
+      because <span class="nobr">\(x_i \leq w\),</span> and this implies the corresponding
+      inequality for the norms. Since \(0\) is a dentable point of
+      <span class="nobr">\([0,v]\),</span> it follows that
+      \[\Big\|\sum_{i}^{}\alpha _ix_i\Big\|\ge \Big\|\sum_{i}^{}\alpha _i x_i\wedge v\Big\|\ge \delta\]
+      for some <span class="nobr">\(\delta >0\).</span> Thus \(0\) is also a dentable point of
+      <span class="nobr">\([0,w]\),</span> that is, <span class="nobr">\(w \in A\).</span> Finally,
+      if <span class="nobr">\(w&lt;u\),</span> then there would exist some nonzero \(t \in [0,u-w]\)
+      such that \(0\) is dentable in <span class="nobr">\([0,t]\),</span> by part <i>(i)</i> of the
+      proof. But then, by what we proved in step <i>(ii)</i>, \(0\) is dentable in
+      <span class="nobr">\([0,w+t]\),</span> and <span class="nobr">\(w + t \leq u\),</span> so
+      <span class="nobr">\(w+t \in A\),</span> contradicting the fact that \(w\) is the
+      supremum.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <div class="thm thm-plain env-lem" id="lem:2">
+    <p><span class="thm-head"><span class="thm-name">Lemma 5.3</span>.</span> Let \(E\) be a Banach
+      lattice, and let \(u \in E_+\) be such that \([0,u]\) is weakly compact. For
+      <span class="nobr">\(n \in \N\),</span> let
+      <span class="nobr">\(H_n=\{\, x \in E_+ : \|x\wedge u\|\ge n^{-1} \, \}\).</span> Then for
+      every <span class="nobr">\(n\),</span> there exists \(m \in \N\) such that
+      <span class="nobr">\(\co(H_n)\subseteq H_m\).</span></p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> If \(x_i \in H_n\) are finitely many elements, and
+      \(\alpha _i\) are positive scalars with <span class="nobr">\(\sum_{i}^{}\alpha _i=1\),</span>
+      then
+      \[\sum_{i}^{}\alpha _i (x_i\wedge u) \in \co([0,u]\setminus B(0,1/n)).\]
+      By <a class="ref" href="#lem:1">Lemma 5.2</a>, there exists \(m \in \N\) such that
+      \(y \in \co([0,u]\setminus B(0,1/n))\) implies <span class="nobr">\(\|y\|\ge m^{-1}\).</span>
+      Therefore
+      \[\bigg\|\bigg(\sum_{i}^{}\alpha _ix_i\bigg) \wedge u\bigg\|\ge \Big\|\sum_{i}^{}\alpha _i(x_i\wedge u)\Big\|\ge m^{-1}.\]
+      This shows that <span class="nobr">\(\rawco(H_n)\subseteq H_m\),</span> and taking closures
+      yields the desired result.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <div class="thm thm-plain env-lem" id="lem:3">
+    <p><span class="thm-head"><span class="thm-name">Lemma 5.4</span>.</span> Let \(E\) be an order
+      continuous Banach lattice, and let \(A,B\subseteq E_+\) be bounded closed convex sets. Then
+      \(\rawco(A\cup B)\) is closed, that is,
+      <span class="nobr">\(\co(A\cup B)=\rawco(A\cup B)\).</span></p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> If \(A\) or \(B\) is empty there is nothing to prove,
+      so assume that both are nonempty. Since \(A\) and \(B\) are convex, every element of
+      \(\rawco(A \cup B)\) is of the form \(\lambda a + (1 - \lambda) b\) with
+      <span class="nobr">\(a \in A\),</span> \(b \in B\) and
+      <span class="nobr">\(\lambda \in [0,1]\);</span> in other words,
+      \[\rawco(A \cup B) = \bigcup_{\lambda \in [0,1]} \big(\lambda A + (1 - \lambda) B\big).\]
+      Let <span class="nobr">\(x \in \co(A \cup B)\).</span> Then there exist
+      <span class="nobr">\(a_n \in A\),</span> \(b_n \in B\) and \(\lambda_n \in [0,1]\) such that
+      \[x = \lim_n \lambda_n a_n + (1 - \lambda_n) b_n.\]
+      Passing to a subsequence, we may assume that \(\lambda_n\) converges to some
+      <span class="nobr">\(\lambda \in [0,1]\).</span> Since \(A\) and \(B\) are bounded,
+      \(\|(\lambda_n - \lambda) a_n\| \to 0\) and
+      <span class="nobr">\(\|(\lambda_n - \lambda) b_n\| \to 0\),</span> so that
+      \[x = \lim_n \big(\lambda a_n + (1 - \lambda) b_n\big).\]
+      Let \(f_n = \lambda a_n\) and <span class="nobr">\(g_n = (1 - \lambda) b_n\),</span> which are
+      positive, and note that \(x \geq 0\) because \(E_+\) is closed. The idea is to show that
+      \((f_n)\) is almost inside the interval <span class="nobr">\([0,x]\),</span> and then use weak
+      compactness of this interval. Indeed, since <span class="nobr">\(g_n \geq 0\),</span>
+      \[0 \leq f_n - f_n \wedge x = (f_n - x)_+ \leq (f_n + g_n - x)_+ \leq |f_n + g_n - x|,\]
+      and therefore
+      \[\|f_n - f_n \wedge x\| \leq \|f_n + g_n - x\| \to 0.\]
+      Since \(E\) is order continuous, the interval \([0,x]\) is weakly compact by
+      <a class="ref" href="#thm:order-continuity">Theorem 4.3</a>, so the sequence
+      \((f_n \wedge x)\) has a weak cluster point <span class="nobr">\(f \in [0,x]\);</span> that
+      is, there is a subnet \((f_{n_\beta} \wedge x)_\beta\) that converges weakly to
+      <span class="nobr">\(f\).</span> By the previous estimate, the subnet \((f_{n_\beta})_\beta\)
+      also converges weakly to <span class="nobr">\(f\).</span> The set \(\lambda A\) is closed and
+      convex, hence weakly closed by Mazur’s theorem, so
+      <span class="nobr">\(f \in \lambda A\).</span> Consequently,
+      \[g_{n_\beta} = (f_{n_\beta} + g_{n_\beta}) - f_{n_\beta} \to x - f \quad \text{weakly},\]
+      and, by the same argument, <span class="nobr">\(g = x - f \in (1 - \lambda) B\).</span> Thus
+      \[x = f + g \in \lambda A + (1 - \lambda) B \subseteq \rawco(A \cup B),\]
+      which shows that \(\rawco(A \cup B)\) is
+      closed.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <p>The next lemma is where sets that are not order dentable enter the picture. It says that, if
+    \(A\) is not order dentable, then the part of \(A\) that is far from \(0\) in the weak sense of
+    \(H_n\) is negligible: it cannot help to recover \(A\) from a smaller closed convex set by
+    taking closed convex hulls. In the last two lemmas, \(E\) denotes an order continuous Banach
+    lattice with a quasi-interior point <span class="nobr">\(u \in E_+\),</span> and
+    \[H_n = \{ x \in E_+ : \|x \wedge u\| \geq 1/n \},\]
+    for <span class="nobr">\(n \in \N\).</span></p>
+
+  <div class="thm thm-plain env-lem" id="lem:4">
+    <p><span class="thm-head"><span class="thm-name">Lemma 5.5</span>.</span> Let
+      \(A \subseteq E_+\) be a nonempty closed bounded convex set which is not order dentable, let
+      <span class="nobr">\(n \in \N\),</span> and let \(B \subseteq A\) be a closed convex set such
+      that
+      \[A = \co\big((A \cap H_n) \cup B\big).\]
+      Then <span class="nobr">\(B = A\).</span></p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> By
+      <a class="ref" href="#thm:order-continuity">Theorem 4.3</a>, the interval \([0,u]\) is weakly
+      compact, so by <a class="ref" href="#lem:2">Lemma 5.3</a> there exists \(m \in \N\) such that
+      <span class="nobr">\(\co(H_n) \subseteq H_m\).</span> First, \(B\) is nonempty. Otherwise
+      <span class="nobr">\(A = \co(A \cap H_n) \subseteq \co(H_n) \subseteq H_m\),</span> so every
+      slice of \(A\) is contained in <span class="nobr">\(H_m\),</span> and \(A\) would be order
+      dentable.</p>
+    <p>Suppose, for a contradiction, that <span class="nobr">\(B \neq A\),</span> and let
+      <span class="nobr">\(a_0 \in A \setminus B\).</span> By the Hahn–Banach separation theorem,
+      there exists \(f \in E^*\) such that
+      <span class="nobr">\(f(a_0) > \sup_{b \in B} f(b)\);</span> rescaling, we may assume that
+      <span class="nobr">\(\|f\| = 1\).</span> Then <span class="nobr">\(M(A, f) > M(B, f)\),</span>
+      so we can choose \(\alpha > 0\) such that
+      \[4 \alpha &lt; M(A, f) - M(B, f).\]
+      We claim that the slice \(S(A, f, \alpha)\) is contained in
+      <span class="nobr">\(H_{4m}\),</span> which contradicts the fact that \(A\) is not order
+      dentable.</p>
+    <p>Let <span class="nobr">\(x \in S(A, f, \alpha)\).</span> By assumption,
+      <span class="nobr">\(x \in \co((A \cap H_n) \cup B)\),</span> so there exists
+      \(y \in \rawco((A \cap H_n) \cup B)\) such that
+      \[\|x - y\| \leq \min\{\alpha, (4m)^{-1}\}.\]
+      Since \(B\) is convex, we can write \(y = \lambda a + (1 - \lambda) b\) with
+      <span class="nobr">\(\lambda \in [0,1]\),</span> \(a \in \rawco(A \cap H_n)\) and
+      <span class="nobr">\(b \in B\).</span> On the one hand, since
+      <span class="nobr">\(\|f\| = 1\),</span>
+      \[f(y) \geq f(x) - \|x - y\| > M(A, f) - 2\alpha.\]
+      On the other hand, \(a \in A\) because \(A\) is convex, so
+      \[f(y) = \lambda f(a) + (1 - \lambda) f(b) \leq \lambda M(A, f) + (1 - \lambda) M(B, f).\]
+      Combining both inequalities,
+      \[(1 - \lambda) \big(M(A, f) - M(B, f)\big) &lt; 2 \alpha &lt; \frac{M(A, f) - M(B, f)}{2},\]
+      which shows that <span class="nobr">\(\lambda \geq 1/2\).</span> Since
+      <span class="nobr">\(b \geq 0\),</span> this gives
+      <span class="nobr">\(y \geq \lambda a \geq a/2 \geq 0\),</span> and therefore
+      \[y \wedge u \geq \frac{a}{2} \wedge u \geq \frac{a}{2} \wedge \frac{u}{2} = \frac{1}{2} (a \wedge u).\]
+      Moreover, <span class="nobr">\(a \in \co(H_n) \subseteq H_m\),</span> so that
+      \[\|y \wedge u\| \geq \frac{1}{2} \|a \wedge u\| \geq \frac{1}{2m}.\]
+      Finally, using the standard inequality
+      <span class="nobr">\(|x \wedge u - y \wedge u| \leq |x - y|\),</span> it follows that
+      \[\|x \wedge u\| \geq \|y \wedge u\| - \|x - y\| \geq \frac{1}{2m} - \frac{1}{4m} = \frac{1}{4m},\]
+      that is, <span class="nobr">\(x \in H_{4m}\).</span> This proves the claim and completes the
+      proof.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <p>The last lemma is the building block of the construction in the main proof, and it is where all
+    the previous lemmas come together. Start with a point \(x\) of \(A\) where some functional \(f\)
+    attains its maximum, and with a slice \(S\) of \(A\) determined by
+    <span class="nobr">\(f\).</span> The lemma says that, up to an arbitrarily small error, \(x\)
+    can be split as a convex combination of points \(y_i\) which are again points where some
+    functional \(f_i\) attains its maximum, and whose slices are contained in \(S\) but avoid
+    <span class="nobr">\(H_n\).</span></p>
+
+  <div class="thm thm-plain env-lem" id="lem:5">
+    <p><span class="thm-head"><span class="thm-name">Lemma 5.6</span>.</span> Let
+      \(A \subseteq E_+\) be a nonempty closed bounded convex set which is not order dentable. Let
+      \(x \in A\) and \(f \in E^*\) be such that <span class="nobr">\(f(x) = M(A, f)\),</span> let
+      \(\alpha, \varepsilon > 0\) and <span class="nobr">\(n \in \N\),</span> and let
+      <span class="nobr">\(S = S(A, f, \alpha)\).</span> Then there exist
+      <span class="nobr">\(p \in \N\),</span> <span class="nobr">\(y_1, \ldots, y_p \in A\),</span>
+      <span class="nobr">\(f_1, \ldots, f_p \in E^*\),</span> \(\alpha_1, \ldots, \alpha_p > 0\) and
+      \(\lambda_1, \ldots, \lambda_p \geq 0\) such that, for every
+      <span class="nobr">\(i = 1, \ldots, p\),</span></p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p><span class="nobr">\(f_i(y_i) = M(A, f_i)\),</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p><span class="nobr">\(S(A, f_i, \alpha_i) \subseteq S\),</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p><span class="nobr">\(S(A, f_i, \alpha_i) \cap H_n = \emptyset\),</span></p>
+      </li>
+    </ol>
+    <p>and moreover</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(iv)</span>
+        <p>\(\sum_{i=1}^p \lambda_i = 1\) and
+          <span class="nobr">\(\big\| x - \sum_{i=1}^p \lambda_i y_i \big\| &lt; \varepsilon\).</span></p>
+      </li>
+    </ol>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof.</span> Let <span class="nobr">\(L = A \cap H_n\).</span> If
+      \((A \setminus S) \cup L\) is empty, then the lemma holds trivially, so we may assume that
+      \((A \setminus S) \cup L\) is nonempty. Let \(Z\) be the set of those \(z \in A\) for which
+      there exists \(g \in E^*\) such that
+      \[g(z) = M(A, g) > M\big((A \setminus S) \cup L, g\big).\]
+      In words, \(Z\) consists of the support points of \(A\) whose maximum is strictly above its
+      values on \(A \setminus S\) and on <span class="nobr">\(L\).</span> The proof has the
+      following steps:</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(i)</span>
+        <p>Using the Bishop–Phelps theorem, show that
+          <span class="nobr">\(A = \co((A \setminus S) \cup L \cup Z)\).</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(ii)</span>
+        <p>Using <a class="ref" href="#lem:4">Lemma 5.5</a>, get rid of
+          <span class="nobr">\(L\),</span> that is, show that
+          <span class="nobr">\(A = \co((A \setminus S) \cup Z)\).</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(iii)</span>
+        <p>Using <a class="ref" href="#lem:3">Lemma 5.4</a>, show that
+          <span class="nobr">\(x \in \co(Z)\),</span> and deduce the result.</p>
+      </li>
+    </ol>
+    <p>For step <i>(i)</i>, let
+      \[D = \co\big((A \setminus S) \cup L \cup Z\big),\]
+      which is a nonempty closed convex subset of <span class="nobr">\(A\),</span> and suppose, for
+      a contradiction, that <span class="nobr">\(D \neq A\).</span> By
+      <a class="ref" href="#cor:bishop-phelps">Corollary 3.7</a> there exist \(g \in E^*\) and
+      \(z \in A\) such that <span class="nobr">\(M(D,g) &lt; M(A, g) = g(z)\).</span> Since
+      <span class="nobr">\((A \setminus S) \cup L \subseteq D\),</span> this shows that
+      <span class="nobr">\(z \in Z \subseteq D\),</span> and so
+      <span class="nobr">\(g(z) \leq M(D, g)\),</span> a contradiction. Hence
+      <span class="nobr">\(D = A\).</span></p>
+    <p>For step <i>(ii)</i>, put
+      \[B = \co\big((A \setminus S) \cup Z\big),\]
+      which is a closed convex subset of <span class="nobr">\(A\).</span> Then \(A=\co(B\cup L)\)
+      and, since \(A\) is not order dentable, <a class="ref" href="#lem:4">Lemma 5.5</a> shows that
+      <span class="nobr">\(B = A\).</span></p>
+    <p>For step <i>(iii)</i>, note that every element \(y\) of \(\co(A \setminus S)\) satisfies
+      <span class="nobr">\(f(y) \leq M(A, f) - \alpha\),</span> because this holds on
+      \(A \setminus S\) and the set \(\{y \in E : f(y) \leq M(A, f) - \alpha\}\) is closed and
+      convex. By <a class="ref" href="#lem:3">Lemma 5.4</a> applied to the bounded closed convex
+      sets \(\co(A \setminus S)\) and <span class="nobr">\(\co(Z)\),</span>
+      \[A = \co\big(\co(A \setminus S) \cup \co(Z)\big) = \rawco\big(\co(A \setminus S) \cup \co(Z)\big),\]
+      so we can write \(x = \lambda a + (1 - \lambda) z\) with
+      <span class="nobr">\(\lambda \in [0,1]\),</span> \(a \in \co(A \setminus S)\) and
+      <span class="nobr">\(z \in \co(Z)\).</span> Then
+      \[\begin{align*} M(A, f) = f(x) &= \lambda f(a) + (1 - \lambda) f(z) \\
+        &\leq \lambda \big(M(A, f) - \alpha\big) + (1 - \lambda) M(A, f) = M(A, f) - \lambda \alpha, \end{align*}\]
+      which forces <span class="nobr">\(\lambda = 0\),</span> that is,
+      <span class="nobr">\(x \in \co(Z)\).</span></p>
+    <p>Finally, since <span class="nobr">\(x \in \co(Z)\),</span> there exist
+      <span class="nobr">\(p \in \N\),</span> \(y_1, \ldots, y_p \in Z\) and
+      \(\lambda_1, \ldots, \lambda_p \geq 0\) with \(\sum_{i=1}^p \lambda_i = 1\) such that
+      \[\Big\| x - \sum_{i=1}^p \lambda_i y_i \Big\| &lt; \varepsilon,\]
+      which is <i>(iv)</i>. For each <span class="nobr">\(i\),</span> since
+      <span class="nobr">\(y_i \in Z\),</span> there exists \(f_i \in E^*\) such that
+      \[f_i(y_i) = M(A, f_i) > M\big((A \setminus S) \cup L, f_i\big),\]
+      which is <i>(i)</i>, and we can choose \(\alpha_i > 0\) such that
+      \[M(A, f_i) - \alpha_i \geq M\big((A \setminus S) \cup L, f_i\big).\]
+      Then the slice \(S(A, f_i, \alpha_i)\) is disjoint from
+      <span class="nobr">\((A \setminus S) \cup L\).</span> Since it is contained in
+      <span class="nobr">\(A\),</span> it is contained in <span class="nobr">\(S\),</span> which is
+      <i>(ii)</i>, and it is disjoint from <span class="nobr">\(H_n\),</span> because
+      <span class="nobr">\(L = A \cap H_n\),</span> which is
+      <i>(iii)</i>.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+
+  <div class="proof">
+    <p><span class="proof-head">Proof 2.</span> Suppose that \(E\) is a Banach lattice with the
+      Krein–Milman property. We want to show that \(E\) has the Radon–Nikodým property. As already
+      noted in <a class="ref" href="#sec:KMP">Section 3</a>, \(E\) cannot contain
+      <span class="nobr">\(c_0\),</span> and therefore by
+      <a class="ref" href="#thm:KB">Theorem 4.6</a> it is a KB-space, hence order continuous. Thus,
+      according to <a class="ref" href="#thm:order-continuity">Theorem 4.3</a>, its intervals are
+      weakly compact, and therefore we can use all the machinery developed in the previous
+      lemmas.</p>
+    <p>Moreover, by the order-theoretic characterization of the RNP
+      (<a class="ref" href="#thm:ghoussoub-talagrand">Theorem 4.8</a>), since \(E\) does not contain
+      <span class="nobr">\(c_0\),</span> \(E\) has the RNP if and only if it is order dentable.
+      Suppose, in order to reach a contradiction, that \(E\) is not order dentable. Then there exist
+      a closed sublattice \(F\) of \(E\) with a quasi-interior point and a closed bounded convex set
+      \(A \subseteq F_+\) with \(A \neq \{0\}\) that is not order dentable in
+      <span class="nobr">\(F\).</span> Since \(F\) is a closed subspace of
+      <span class="nobr">\(E\),</span> it also has the KMP, so everything said above applies to
+      \(F\) as well. Hence we may replace \(E\) by <span class="nobr">\(F\),</span> and assume that
+      \(E\) has a quasi-interior point <span class="nobr">\(u \in E_+\),</span> which we fix from
+      now on (the sets \(H_n\) are defined in terms of this <span class="nobr">\(u\)),</span> and
+      that \(A \subseteq E_+\) is a closed bounded convex set with \(A \neq \{0\}\) which is not
+      order dentable. We will use <a class="ref" href="#lem:5">Lemma 5.6</a> to construct an
+      increasing family of finite algebras \(\Sigma _n\) of <span class="nobr">\([0,1]\),</span> and
+      \(\Sigma _n\)-measurable functions <span class="nobr">\(X_n\colon [0,1]\to A\),</span>
+      <span class="nobr">\(f_n\colon [0,1]\to E^{*}\),</span> and
+      <span class="nobr">\(\alpha _n\colon [0,1]\to \R_+\),</span> such that, for every
+      \(t \in [0,1]\) and <span class="nobr">\(n \in \N\),</span></p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(a)</span>
+        <p><span class="nobr">\(f_n(t)\big(X_n(t)\big) = M\big(A, f_n(t)\big)\),</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(b)</span>
+        <p><span class="nobr">\(S\big(A, f_n(t), \alpha_n(t)\big) \subseteq S\big(A, f_{n-1}(t), \alpha_{n-1}(t)/2\big)\),</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(c)</span>
+        <p><span class="nobr">\(S\big(A, f_n(t), \alpha_n(t)\big) \cap H_n = \emptyset\),</span></p>
+      </li>
+      <li>
+        <span class="enum-label">(d)</span>
+        <p><span class="nobr">\(\big\| X_{n-1}(t) - \mathbb{E}_{n-1}(X_n)(t) \big\| &lt; 2^{-n}\),</span>
+          where \(\mathbb{E}_n = \mathbb{E}(\,\cdot \mid \Sigma_n)\) denotes the conditional
+          expectation with respect to <span class="nobr">\(\Sigma_n\).</span></p>
+      </li>
+    </ol>
+    <p>These functions will keep track of successive applications of
+      <a class="ref" href="#lem:5">Lemma 5.6</a>. From (a), it will only be relevant to us that
+      <span class="nobr">\(X_n(t) \in S\big(A, f_n(t), \alpha_n(t)\big)\).</span> From (b), what is
+      important is that
+      <span class="nobr">\(\overline{S\big(A, f_n(t), \alpha_n(t)\big)} \subseteq S\big(A, f_{n-1}(t), \alpha_{n-1}(t)\big)\);</span>
+      the \(\alpha_{n-1}(t)/2\) is only chosen so that this inclusion holds.</p>
+    <p>Let us explain the construction in detail. First, the base step
+      <span class="nobr">\(n=0\).</span> By Bishop–Phelps, there exists a functional
+      \(f_0 \in E^{*}\) supporting \(A\) at \(x_0\) with
+      <span class="nobr">\(M(A, f_0) > 0\).</span> Indeed, since
+      <span class="nobr">\(A \neq \{0\}\),</span> there exist \(a \in A\) and \(h \in E^*\) with
+      <span class="nobr">\(h(a) > 0\);</span> if \(r = \sup_{y \in A} \|y\|\) and \(f_0\) is a
+      support functional of \(A\) with <span class="nobr">\(\|f_0 - h\| &lt; h(a)/(2r)\),</span>
+      then <span class="nobr">\(M(A, f_0) \geq f_0(a) > h(a)/2 > 0\).</span> Put
+      <span class="nobr">\(\Sigma _0=\{\emptyset,[0,1]\}\),</span>
+      <span class="nobr">\(X_0(t)=x_0\),</span> <span class="nobr">\(f_0(t)=f_0\),</span> and
+      <span class="nobr">\(\alpha _0(t)=\alpha _0\),</span> where
+      <span class="nobr">\(\alpha_0 = M(A, f_0)\).</span> Then only the condition in (a) makes
+      sense, and it is obviously satisfied. The requirement \(M(A, f_0) > 0\) will be used at the
+      end of the proof to guarantee that the set we construct is not
+      <span class="nobr">\(\{0\}\).</span></p>
+    <p>Since most conditions are vacuous in this base step <span class="nobr">\(n=0\),</span> let us
+      also do the case \(n=1\) explicitly. Start by applying
+      <a class="ref" href="#lem:5">Lemma 5.6</a> to <span class="nobr">\(A\),</span>
+      <span class="nobr">\(x_0 \in A\),</span> <span class="nobr">\(f_0 \in E^{*}\),</span>
+      \(\alpha =\alpha _0/2\) (so that <span class="nobr">\(S=S(A,f_0,\alpha _0/2)\)),</span>
+      \(\varepsilon =2^{-1}\) and <span class="nobr">\(n=1\).</span> The lemma yields
+      <span class="nobr">\(p \in \N\),</span> <span class="nobr">\(y_1,\ldots ,y_p \in A\),</span>
+      <span class="nobr">\(f_1,\ldots ,f_p \in E^{*}\),</span>
+      <span class="nobr">\(\alpha _1,\ldots ,\alpha _p >0\),</span> and
+      \(\lambda _1,\ldots ,\lambda _p\ge 0\) with
+      <span class="nobr">\(\sum_{i=1}^{p}\lambda _i=1\),</span> satisfying conditions (i) to (iv) of
+      the lemma. Discarding the indices \(i\) with <span class="nobr">\(\lambda_i = 0\),</span>
+      which do not affect (iv), we may assume that \(\lambda_i > 0\) for every
+      <span class="nobr">\(i\).</span> Define \(\Sigma _1\) to be the \(\sigma\)-algebra of
+      \([0,1]\) generated by \(p\) consecutive intervals \(I_1,\ldots ,I_p\) partitioning
+      <span class="nobr">\([0,1]\),</span> of lengths
+      <span class="nobr">\(\lambda _1,\ldots ,\lambda _p\),</span> respectively. Define also
+      \[X_1=\sum_{i=1}^{p}y_i \chi _{I_i}, \quad f_1 = \sum_{i=1}^{p} f_i \chi_{I_i}, \quad \alpha_1 = \sum_{i=1}^{p} \alpha _i \chi_{I_i}.\]
+      These are, by definition, \(\Sigma _1\)-measurable. Moreover, if
+      <span class="nobr">\(t \in I_{i_0}\),</span> then
+      <span class="nobr">\(X_1(t) = y_{i_0}\),</span> \(f_1(t) = f_{i_0}\) and
+      <span class="nobr">\(\alpha_1(t) = \alpha _{i_0}\),</span> so that</p>
+    <ol class="enum">
+      <li>
+        <span class="enum-label">(a)</span>
+        <p>\(f_1(t)\big(X_1(t)\big) = M\big(A, f_1(t)\big)\) is condition (i) of the lemma;</p>
+      </li>
+      <li>
+        <span class="enum-label">(b)</span>
+        <p>\(S\big(A, f_1(t), \alpha_1(t)\big) \subseteq S(A, f_0, \alpha_0/2) = S\big(A, f_0(t), \alpha_0(t)/2\big)\)
+          is condition (ii);</p>
+      </li>
+      <li>
+        <span class="enum-label">(c)</span>
+        <p>\(S\big(A, f_1(t), \alpha_1(t)\big) \cap H_1 = \emptyset\) is condition (iii);</p>
+      </li>
+      <li>
+        <span class="enum-label">(d)</span>
+        <p>since \(\Sigma_0\) is trivial, \(\mathbb{E}_0(X_1)\) is the constant function
+          \[\mathbb{E}_0(X_1)(t) = \int_0^1 X_1(s) \, ds = \sum_{i=1}^{p} \lambda_i y_i,\]
+          and so condition (iv) gives
+          \[\big\| X_0(t) - \mathbb{E}_0(X_1)(t) \big\| = \Big\| x_0 - \sum_{i=1}^{p} \lambda_i y_i \Big\| &lt; 2^{-1}.\]</p>
+      </li>
+    </ol>
+    <p>Now for the general induction step. Suppose \(\Sigma _n, X_n, f_n, \alpha _n\) have already
+      been constructed, for some <span class="nobr">\(n\ge 1\).</span> Let \(I_1,\ldots ,I_k\) be
+      the atoms of the finite \(\sigma\)-algebra \(\Sigma _n\) (which, as we will see in the
+      construction, are actually intervals). Let <span class="nobr">\(x_j\),</span> \(f_j\) and
+      \(\alpha_j\) denote the constant values of <span class="nobr">\(X_n\),</span> \(f_n\) and
+      \(\alpha_n\) on <span class="nobr">\(I_j\).</span> Apply
+      <a class="ref" href="#lem:5">Lemma 5.6</a> to <span class="nobr">\(A\),</span>
+      <span class="nobr">\(x_j\),</span> <span class="nobr">\(f_j\),</span> \(\alpha =\alpha _j/2\)
+      (so that <span class="nobr">\(S=S(A,f_j,\alpha _j/2)\)),</span> \(\varepsilon =2^{-n-1}\) and
+      \(n+1\) in place of <span class="nobr">\(n\).</span> This yields \(p_j\) points
+      <span class="nobr">\(y_{j 1},\ldots ,y_{j p_j}\in A\),</span> functionals
+      <span class="nobr">\(f_{j1}, \ldots, f_{jp_j} \in E^*\),</span> and numbers
+      \(\alpha _{j1}, \ldots, \alpha _{jp_j} > 0\) and
+      \(\lambda_{j1}, \ldots, \lambda_{jp_j} \geq 0\) with
+      <span class="nobr">\(\sum_{i=1}^{p_j} \lambda_{ji} = 1\),</span> satisfying conditions (i) to
+      (iv) of the lemma; this is possible because \(f_j(x_j) = M(A, f_j)\) by (a). As before, we may
+      assume that \(\lambda_{ji} > 0\) for every <span class="nobr">\(i\).</span> Divide \(I_j\)
+      into \(p_j\) consecutive intervals \(I_{j1}, \ldots, I_{jp_j}\) of lengths
+      <span class="nobr">\(\lambda_{j1} |I_j|, \ldots, \lambda_{jp_j} |I_j|\),</span> respectively,
+      where \(|I|\) denotes the length of an interval <span class="nobr">\(I\).</span> Define
+      \(\Sigma_{n+1}\) to be the \(\sigma\)-algebra of \([0,1]\) generated by the intervals
+      <span class="nobr">\(I_{ji}\),</span> for \(j = 1, \ldots, k\) and
+      <span class="nobr">\(i = 1, \ldots, p_j\),</span> which refines
+      <span class="nobr">\(\Sigma_n\),</span> and define
+      \[X_{n+1} = \sum_{j=1}^{k} \sum_{i=1}^{p_j} y_{ji} \chi_{I_{ji}}, \quad f_{n+1} = \sum_{j=1}^{k} \sum_{i=1}^{p_j} f_{ji} \chi_{I_{ji}}, \quad \alpha_{n+1} = \sum_{j=1}^{k} \sum_{i=1}^{p_j} \alpha_{ji} \chi_{I_{ji}}.\]
+      These are \(\Sigma_{n+1}\)-measurable, and for every \(t \in I_{ji}\) conditions (a), (b) and
+      (c) for \(n + 1\) are conditions (i), (ii) and (iii) of the lemma, respectively, because
+      \(f_n(t) = f_j\) and <span class="nobr">\(\alpha_n(t) = \alpha _j\).</span> As for (d), the
+      atom of \(\Sigma_n\) that contains \(t\) is <span class="nobr">\(I_j\),</span> so that
+      \[\mathbb{E}_n(X_{n+1})(t) = \frac{1}{|I_j|} \int_{I_j} X_{n+1}(s) \, ds = \sum_{i=1}^{p_j} \lambda_{ji} y_{ji},\]
+      and condition (iv) gives
+      <span class="eq-anchor" id="eq:almost_conv_comb"></span>\[\big\| X_n(t) - \mathbb{E}_n(X_{n+1})(t) \big\| = \Big\| x_j - \sum_{i=1}^{p_j} \lambda_{ji} y_{ji} \Big\| &lt; 2^{-n-1}. \tag{1}\]
+      This completes the construction.</p>
+    <p>According to (d), \(X_n\) is not really a martingale with respect to the filtration
+      \((\Sigma _n)\)… but we can fix that by passing to an appropriate limit. But why do we even
+      want to get a martingale? Because, as <a class="ref" href="#eq:almost_conv_comb">(1)</a>
+      shows, the conditional expectations are a way to keep track of convex combinations. Right now,
+      (d) guarantees that \(X_n(t)\) is <em>almost</em> a convex combination of
+      <span class="nobr">\(X_{n+1}(s)\),</span> for appropriate values of
+      <span class="nobr">\(s\).</span> Passing to the limit to get a martingale will remove this
+      approximation and turn it into an exact equality.</p>
+    <p>It is time to work out the details. Since \(A\) is bounded, all the functions \(X_n\) belong
+      to <span class="nobr">\(L_\infty([0,1]; E)\),</span> so by
+      <a class="ref" href="#cor:conditional-expectation-contractive">Corollary 2.6</a> and (d),
+      \[\begin{aligned} \big\| \mathbb{E}_n(X_{k+1}) - \mathbb{E}_n(X_k) \big\|_\infty &=\big\| \mathbb{E}_n(\mathbb{E}_k(X_{k+1}) - X_k) \big\|_\infty \\
+        &\leq \big\| \mathbb{E}_k(X_{k+1}) - X_k \big\|_\infty \leq 2^{-k-1}, \end{aligned}\]
+      for <span class="nobr">\(k\ge n\).</span> Therefore, for
+      <span class="nobr">\(l > k \geq n\),</span>
+      \[\big\| \mathbb{E}_n(X_l) - \mathbb{E}_n(X_k) \big\|_\infty \leq \sum_{m=k}^{l-1} 2^{-m-1} &lt; 2^{-k}.\]
+      Hence \((\mathbb{E}_n(X_k))_{k\ge n}\) is uniformly Cauchy in
+      <span class="nobr">\(L_\infty ([0,1],\Sigma _n;E)\).</span> Let \(Y_n\) be its limit.
+      According to <a class="ref" href="#cor:conditional-expectation-contractive">Corollary 2.6</a>,
+      \(\mathbb{E}_n\) is continuous, so
+      \[\mathbb{E}_n(Y_{n+1}) = \lim_k \mathbb{E}_n\big(\mathbb{E}_{n+1}(X_k)\big) = \lim_k \mathbb{E}_n(X_k) = Y_n,\]
+      and \((Y_n)\) is indeed a martingale with respect to the filtration
+      <span class="nobr">\((\Sigma _n)\).</span> Moreover, by construction
+      \[X_k(s)\in S(A,f_n(s),\alpha _n(s)/2)\]
+      for all <span class="nobr">\(k\ge n\),</span> and if \(t\) belongs to the same atom in
+      \(\Sigma _n\) as <span class="nobr">\(s\),</span> then \(f_n(s)=f_n(t)\) and
+      <span class="nobr">\(\alpha _n(s)=\alpha _n(t)\).</span> Thus, being \(\mathbb{E}_n(X_k)(t)\)
+      a convex combination of <span class="nobr">\(X_k(s)\),</span> for \(s\) in the same atom, with
+      respect to <span class="nobr">\(\Sigma _n\),</span> as <span class="nobr">\(t\),</span> it
+      follows that
+      \[\mathbb{E}_n(X_k)(t) \in S(A,f_n(t),\alpha _n(t)/2).\]
+      By taking the limit in <span class="nobr">\(k\),</span> it follows that \(Y_n(t)\) lies in the
+      closure of <span class="nobr">\(S(A,f_n(t),\alpha _n(t)/2)\),</span> and therefore that
+      <span class="nobr">\(Y_n(t)\in S(A,f_n(t), \alpha _n(t))\).</span></p>
+    <p>Consider now the closed convex hull of all the values of the martingale,
+      \[C = \co\big(\{ Y_n(t) : n \in \N,\ t \in [0,1] \}\big).\]
+      Since \(Y_n(t) \in S(A, f_n(t), \alpha_n(t)) \subseteq A\) and \(A\) is closed and convex,
+      \(C\) is a nonempty closed bounded convex subset of <span class="nobr">\(A\),</span> and in
+      particular <span class="nobr">\(C \subseteq E_+\).</span> Moreover,
+      <span class="nobr">\(C \neq \{0\}\):</span> for every
+      <span class="nobr">\(t \in [0,1]\),</span> \(Y_0(t)\) lies in the closure of
+      <span class="nobr">\(S(A, f_0, \alpha_0/2)\),</span> so that
+      \[f_0\big(Y_0(t)\big) \geq M(A, f_0) - \frac{\alpha_0}{2} = \frac{M(A, f_0)}{2} > 0,\]
+      because <span class="nobr">\(\alpha_0 = M(A, f_0) > 0\);</span> in particular,
+      <span class="nobr">\(Y_0(t) \neq 0\).</span> We will see that \(C\) has only \(0\) as an
+      extreme point and, therefore, it contradicts the Krein–Milman property.</p>
+    <p>But before that, let us try to make sense of this choice of <span class="nobr">\(C\).</span>
+      The way to show that a point is not extreme is to write it as a convex combination of other
+      points of the set. The martingale does exactly this, in a systematic way. Indeed, let
+      <span class="nobr">\(t \in [0,1]\),</span> let \(I\) be the atom of \(\Sigma_n\) that contains
+      <span class="nobr">\(t\),</span> and let \(J_1, \ldots, J_q\) be the atoms of \(\Sigma_{n+1}\)
+      contained in <span class="nobr">\(I\).</span> Since \(Y_{n+1}\) is constant on each
+      <span class="nobr">\(J_l\),</span> say equal to <span class="nobr">\(z_l\),</span> the
+      martingale property gives
+      \[Y_n(t) = \mathbb{E}_n(Y_{n+1})(t) = \frac{1}{|I|} \int_I Y_{n+1}(s) \, ds = \sum_{l=1}^{q} \frac{|J_l|}{|I|} z_l,\]
+      so every value of \(Y_n\) is a convex combination of values of
+      <span class="nobr">\(Y_{n+1}\),</span> which in turn are convex combinations of values of
+      <span class="nobr">\(Y_{n+2}\),</span> and so on. In other words, the values of the martingale
+      form a tree in \(A\) in which every node is a convex combination of its successors, and \(C\)
+      is the smallest closed convex set containing this tree. This shows why passing to the limit to
+      get a proper martingale was critical. Moreover, by (b) and (c), all the values of
+      <span class="nobr">\(Y_m\),</span> for <span class="nobr">\(m \geq n\),</span> on an atom of
+      \(\Sigma_n\) lie in a single slice that is disjoint from <span class="nobr">\(H_n\);</span>
+      that is, far down the tree, the points are close to \(0\) in the order-theoretic sense
+      measured by the sets <span class="nobr">\(H_n\).</span></p>
+    <figure class="applet" id="applet-martingale">
+      <!-- The tree of values of a martingale (script: src/js/martingale.js; the caption is below the figure). Left: the atoms of the filtration; right: the values in the plane. -->
+      <div class="applet-views">
+        <canvas class="applet-tree" tabindex="0" role="img" aria-label="The atoms of the filtration, as nested intervals of [0, 1]. Hover over an atom, or use the arrow keys, to see its value as a convex combination."></canvas>
+        <canvas class="applet-plane" role="img" aria-label="The values of the martingale in A, joined as a tree, and their closed convex hull C."></canvas>
+      </div>
+      <div class="applet-controls">
+        <div class="applet-shapes"><button type="button" data-action="new">new</button></div>
+        <label class="applet-alpha applet-levels">levels
+          <input type="range" min="1" max="6" step="1" value="3"></label>
+      </div>
+      <div class="applet-readout" data-out="combination" aria-live="polite"></div>
+      <figcaption><span class="fig-name">Figure 3.</span> The tree of values of a martingale
+        \((Y_n)\) with respect to a filtration <span class="nobr">\((\Sigma_n)\).</span> On the
+        left, the atoms of \(\Sigma_0, \Sigma_1, \ldots\) split \([0,1]\) into smaller and smaller
+        intervals; on the right, \(Y_n\) takes one value in \(A\) on each atom of
+        <span class="nobr">\(\Sigma_n\).</span> Hover over an atom <span class="nobr">\(I\),</span>
+        or over a point: the value of \(Y_n\) on \(I\) is the convex combination of the values on
+        the atoms \(J_l \subseteq I\) of <span class="nobr">\(\Sigma_{n+1}\),</span> with weights
+        <span class="nobr">\(|J_l|/|I|\).</span> The dashed region is the closed convex hull \(C\)
+        of all the values. Use the slider to add levels, and <em>new</em> for another
+        martingale.</figcaption>
+    </figure>
+    <script src="src/js/martingale.js" defer></script>
+    <p>Let us now work out the details. Let \(x \in C\) be nonzero, and let \(u \in E_+\) be the
+      quasi-interior point fixed above. Since
+      <span class="nobr">\(x\wedge n u \le n(x\wedge u)\),</span> and \(u\) is a quasi-interior
+      point, it must be <span class="nobr">\(0&lt; x\wedge u\).</span> Let \(n \in \N\) be such that
+      <span class="nobr">\(x \in H_n\).</span> Let \(I_1,\ldots ,I_p\) be the atoms of
+      <span class="nobr">\(\Sigma _n\),</span> and for \(1\le l\le p\) let
+      <span class="nobr">\(C_l=\co ( \{\, Y_m(t) : m\ge n,t \in I_l \, \})\).</span> By (b),
+      \[Y_m(s)\in \overline{S(A,f_m(s),\alpha _m(s)/2)}\subseteq \overline{S(A,f_n(s),\alpha _n(s)/2)}=\overline{S(A,f_n(t),\alpha _n(t)/2)}\]
+      for every \(s,t \in I_l\) and <span class="nobr">\(m\ge n\).</span> This last set is a closed
+      convex set contained in <span class="nobr">\(S(A,f_n(t),\alpha _n(t))\).</span> Hence
+      \(C_l\subseteq S(A,f_n(t),\alpha_n(t))\) for <span class="nobr">\(1\le l\le p\);</span> in
+      particular, by (c), <span class="nobr">\(C_l\cap H_n=\emptyset\),</span> and
+      <span class="nobr">\(x \not\in C_l\).</span></p>
+    <p>We want to show that
+      <span class="nobr">\(C=\rawco\left( \bigcup_{l\le p} C_l \right)\).</span> This will follow
+      from a successive application of <a class="ref" href="#lem:3">Lemma 5.4</a> once we show that
+      \[C=\co\left( \bigcup_{l\le p} C_l \right).\]
+      The non-trivial inclusion amounts to showing that \(Y_m(t)\) is in the right-hand side of the
+      equation for every \(t \in [0,1]\) and every <span class="nobr">\(m \in \N\).</span> For
+      \(m\ge n\) this is obvious. For <span class="nobr">\(m&lt;n\),</span> we have that
+      <span class="nobr">\(Y_m(t)=\mathbb{E}_m(Y_n)(t)\),</span> which is a convex combination of
+      the values of \(Y_n\) at the atoms in \(\Sigma _n\) that are descendants of the atom in
+      \(\Sigma _m\) that contains <span class="nobr">\(t\).</span> Hence
+      <span class="nobr">\(Y_m(t) \in \rawco\left( \bigcup_{l\le p} C_l \right)\).</span> Thus
+      \(x \in C=\rawco\left( \bigcup_{l\le p} C_l \right)\) cannot be extreme, for if it were, it
+      would belong to some <span class="nobr">\(C_l\),</span> which as we have already seen is not
+      the case.</p>
+    <p>In conclusion, \(C\) is a nonempty closed bounded convex subset of \(E_+\) that is not the
+      closed convex hull of its extreme points. Using it, we can even construct a nonempty closed
+      bounded convex subset of \(E_+\) that does not have extreme points. Indeed, use Bishop–Phelps
+      to obtain a support functional \(f \in E^{*}\) of \(C\) with \(M(C,f)>0\) (as in the base step
+      of the construction); then \(D=\{\, x \in C : f(x)=M(C,f) \, \}\) is extremal in
+      <span class="nobr">\(C\),</span> yet it does not contain <span class="nobr">\(0\),</span> so
+      it does not have any extreme point.<span class="qed" aria-label="End of proof">□</span></p>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="ai-disclosure-and-image-credits-h">
+  <h2 id="ai-disclosure-and-image-credits-h"><a class="sec-anchor" id="ai-disclosure-and-image-credits" href="#ai-disclosure-and-image-credits">AI
+    disclosure and image credits</a></h2>
+
+  <p>Claude Opus 5.5 was used to autocomplete text, to proofread, and to create the web version of
+    the paper (including the embedded applications). The idea, exposition and most of the text are
+    due to the author.</p>
+
+  <!-- Credits for the portraits of the title screen and of the historical margin notes: the last
+       paragraph of the "AI disclosure and image credits" section. One entry per photo, each
+       linking to its source page; initials are tied to the surname with &nbsp; -->
+  <p class="credits">Portraits on the title page and in the margins, all cropped and converted to
+    grayscale:
+    <a href="https://commons.wikimedia.org/wiki/File:Johann_Radon_cr.jpg">J.&nbsp;Radon</a> (public
+    domain);
+    <a href="https://commons.wikimedia.org/wiki/File:Otto_Nikodym_Stefan_Banach_Memorial_Bench_Krakow_Poland.jpg">O.&nbsp;Nikodym
+    and S.&nbsp;Banach</a>, monument in Kraków by Stefan Dousa, photo by Uuuxxxyyyzzz
+    (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_Planty,_%C5%81aweczka_Banacha_i_Nikodyma.jpg">O.&nbsp;Nikodym</a>,
+    the same monument, photo by Aw58 (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY
+    3.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Salomon_Bochner.jpg">S.&nbsp;Bochner</a>, about
+    1970, Woodson Research Center, Rice University
+    (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Paul_Pierre_Levy_1886-1971.jpg">P.&nbsp;Lévy</a>
+    and <a href="https://commons.wikimedia.org/wiki/File:Joseph_Doob.jpg">J.&nbsp;L.&nbsp;Doob</a>,
+    photos by Konrad Jacobs, Archives of the Mathematisches Forschungsinstitut Oberwolfach
+    (<a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 DE</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Joram_Lindenstrauss_1968_(de-bordered,_as-is).jpg">J.&nbsp;Lindenstrauss</a>,
+    photo by George Bergman (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA
+    4.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Robert_Phelps.jpg">R.&nbsp;Phelps</a>, photo by
+    Konrad Jacobs, Archives of the Mathematisches Forschungsinstitut Oberwolfach
+    (<a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en">CC BY-SA 2.0 DE</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Frigyes_Riesz.jpeg">F.&nbsp;Riesz</a> (public
+    domain);
+    <a href="https://commons.wikimedia.org/wiki/File:Leonid_Kantorovich_1975.jpg">L.&nbsp;Kantorovich</a>,
+    photo by Andrei Bogdanov (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Stefana_Banach_-_%D8%B3%D8%AA%D9%8A%D9%81%D8%A7%D9%86_%D8%A8%D9%86%D8%A7%D8%AE.jpg">S.&nbsp;Banach</a>
+    (public domain);
+    <a href="https://commons.wikimedia.org/wiki/File:Krein_memorial_plaque_for_wiki_2008.jpg">M.&nbsp;Krein</a>,
+    memorial plaque, photo by Sergey Marchenko
+    (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Jean_Bourgain_(vertical_crop).jpg">J.&nbsp;Bourgain</a>,
+    photo by George Bergman (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA
+    4.0</a>);
+    <a href="https://commons.wikimedia.org/wiki/File:Michel_Talagrand.jpg">M.&nbsp;Talagrand</a>,
+    photo by George Bergman, Archives of the Mathematisches Forschungsinstitut Oberwolfach
+    (<a href="https://www.gnu.org/licenses/old-licenses/fdl-1.2.html">GFDL 1.2</a>). The adapted
+    images are shared under the same licenses.</p>
+</section>
+
+<section class="sec references" aria-labelledby="references-h">
+  <h2 id="references-h"><a class="sec-anchor" id="references" href="#references">References</a></h2>
+
+  <ol class="bib">
+    <li id="bib-albiac_kalton2016"><span class="bib-label">[1]</span> F. Albiac and N. J. Kalton.
+      <a href="https://doi.org/10.1007/978-3-319-31557-7"><i>Topics in Banach space theory</i></a>.
+      Second. Vol. 233. Graduate Texts in Mathematics. With a foreword by Gilles Godefory. Springer,
+      [Cham], 2016, pp. xx+508. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=3526021">3526021</a>.</li>
+    <li id="bib-aliprantis_burkinshaw2006"><span class="bib-label">[2]</span> C. D. Aliprantis and
+      O. Burkinshaw. <a href="https://doi.org/10.1007/978-1-4020-5008-4"><i>Positive
+      operators</i></a>. Reprint of the 1985 original. Springer, Dordrecht, 2006, pp. xx+376. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=2262133">2262133</a>.</li>
+    <li id="bib-bishop_phelps1963"><span class="bib-label">[3]</span> E. Bishop and R. R. Phelps.
+      “The support functionals of a convex set”. <i>Proc. Sympos. Pure Math., Vol. VII</i>. Amer.
+      Math. Soc., Providence, RI, 1963, pp. 27–35. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=154092">154092</a>.</li>
+    <li id="bib-bochner1933"><span class="bib-label">[4]</span> S. Bochner.
+      <a href="https://doi.org/10.4064/fm-20-1-262-176">“Integration von Funktionen, deren Werte die
+      Elemente eines Vektorraumes sind”</a>. German. <i>Fundam. Math.</i> 20 (1933),
+      pp. 262–276.</li>
+    <li id="bib-bourgain1978"><span class="bib-label">[5]</span> J. Bourgain.
+      <a href="http://www.numdam.org/item?id=CM_1978__36_1_3_0">“A geometric characterization of the
+      Radon-Nikodým property in Banach spaces”</a>. <i>Compositio Math.</i> 36.1 (1978), pp. 3–6.
+      MR: <a href="https://www.ams.org/mathscinet-getitem?mr=515034">515034</a>.</li>
+    <li id="bib-bourgain_talagrand1981"><span class="bib-label">[6]</span> J. Bourgain and M.
+      Talagrand. <a href="https://doi.org/10.2307/2043994">“Dans un espace de Banach reticulé
+      solide, la propriété de Radon-Nikodým et celle de Kreı̆n-Mil′man sont équivalentes”</a>.
+      <i>Proc. Amer. Math. Soc.</i> 81.1 (1981), pp. 93–96. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=589144">589144</a>.</li>
+    <li id="bib-chatterji1968"><span class="bib-label">[7]</span> S. D. Chatterji.
+      <a href="https://doi.org/10.7146/math.scand.a-10868">“Martingale convergence and the
+      Radon-Nikodym theorem in Banach spaces”</a>. <i>Math. Scand.</i> 22 (1968), pp. 21–41. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=246341">246341</a>.</li>
+    <li id="bib-diestel1975"><span class="bib-label">[8]</span> J. Diestel. <i>Geometry of Banach
+      spaces—selected topics</i>. Lecture Notes in Mathematics, Vol. 485. Springer-Verlag,
+      Berlin-New York, 1975, pp. xi+282. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=461094">461094</a>.</li>
+    <li id="bib-doob1953"><span class="bib-label">[9]</span> J. L. Doob. <i>Stochastic
+      processes</i>. John Wiley &amp; Sons, Inc., New York; Chapman &amp; Hall, Ltd., London,
+      1953.</li>
+    <li id="bib-ghoussoub_talagrand1979"><span class="bib-label">[10]</span> N. Ghoussoub and M.
+      Talagrand. <a href="https://doi.org/10.1007/BF01424542">“Order dentability and the
+      Radon-Nikodým property in Banach lattices”</a>. <i>Math. Ann.</i> 243.3 (1979), pp. 217–225.
+      MR: <a href="https://www.ams.org/mathscinet-getitem?mr=548802">548802</a>.</li>
+    <li id="bib-ghoussoub1982"><span class="bib-label">[11]</span> N. Ghoussoub.
+      <a href="http://www.numdam.org/item?id=BSMF_1982__110__233_0">“Riesz-space-valued measures and
+      processes”</a>. <i>Bull. Soc. Math. France</i> 110.3 (1982), pp. 233–257. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=688033">688033</a>.</li>
+    <li id="bib-huff_morris1975"><span class="bib-label">[12]</span> R. E. Huff and P. D. Morris.
+      <a href="https://doi.org/10.2307/2039800">“Dual spaces with the Krein-Milman property have the
+      Radon-Nikodým property”</a>. <i>Proc. Amer. Math. Soc.</i> 49 (1975), pp. 104–108. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=361775">361775</a>.</li>
+    <li id="bib-krein_milman1940"><span class="bib-label">[13]</span> M. Krein and D. Milman.
+      <a href="https://doi.org/10.4064/sm-9-1-133-138">“On extreme points of regular convex
+      sets”</a>. <i>Studia Math.</i> 9 (1940), pp. 133–138. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=4990">4990</a>.</li>
+    <li id="bib-lindenstrauss1966"><span class="bib-label">[14]</span> J. Lindenstrauss.
+      <a href="https://doi.org/10.1007/BF02760071">“On extreme points in \(l_{1}\)”</a>. <i>Israel
+      J. Math.</i> 4 (1966), pp. 59–61. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=200701">200701</a>.</li>
+    <li id="bib-lindenstrauss_tzafriri1979"><span class="bib-label">[15]</span> J. Lindenstrauss and
+      L. Tzafriri. <i>Classical Banach spaces. II</i>. Vol. 97. Ergebnisse der Mathematik und ihrer
+      Grenzgebiete [Results in Mathematics and Related Areas]. Function spaces. Springer-Verlag,
+      Berlin-New York, 1979, pp. x+243. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=540367">540367</a>.</li>
+    <li id="bib-meyer-nieberg1991"><span class="bib-label">[16]</span> P. Meyer-Nieberg.
+      <a href="https://doi.org/10.1007/978-3-642-76724-1"><i>Banach lattices</i></a>. Universitext.
+      Springer-Verlag, Berlin, 1991, pp. xvi+395. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=1128093">1128093</a>.</li>
+    <li id="bib-nikodym1930"><span class="bib-label">[17]</span> O. Nikodym.
+      <a href="https://doi.org/10.4064/fm-15-1-131-179">“Sur une généralisation des intégrales de M.
+      J. Radon.”</a> French. <i>Fundam. Math.</i> 15 (1930), pp. 131–179.</li>
+    <li id="bib-radon1913"><span class="bib-label">[18]</span> J. Radon. “Theorie und Anwendungen
+      der absolut additiven Mengenfunktionen.” German. <i>Wien. Ber.</i> 122 (1913),
+      pp. 1295–1438.</li>
+    <li id="bib-schachermayer1985"><span class="bib-label">[19]</span> W. Schachermayer.
+      <a href="https://doi.org/10.4064/sm-81-3-329-339">“For a Banach space isomorphic to its square
+      the Radon-Nikodým property and the Kreı̆n-Milman property are equivalent”</a>. <i>Studia
+      Math.</i> 81.3 (1985), pp. 329–339. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=808576">808576</a>.</li>
+    <li id="bib-schaefer1974"><span class="bib-label">[20]</span> H. H. Schaefer. <i>Banach lattices
+      and positive operators</i>. Die Grundlehren der mathematischen Wissenschaften, Band 215.
+      Springer-Verlag, New York-Heidelberg, 1974, pp. xi+376. MR:
+      <a href="https://www.ams.org/mathscinet-getitem?mr=423039">423039</a>.</li>
+    <li id="bib-ville1939"><span class="bib-label">[21]</span> J. Ville. <i>Étude critique de la
+      notion de collectif</i>. Vol. 3. Monographies des Probabilités. Gauthier-Villars, Paris,
+      1939.</li>
+  </ol>
+</section>
+</main>
+<script src="src/js/site.js" defer></script>
+</body>
+</html>

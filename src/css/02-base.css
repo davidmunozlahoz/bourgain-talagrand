@@ -1,0 +1,49 @@
+/* Base typography: root font size, body font (New Computer Modern, embedded in
+fonts.css), links, selection colour, scrollbar. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 118.75%;  /* 19px; 20px from 900px up */
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+@media (min-width: 900px) {
+  html { font-size: 125%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;  /* 100vw includes the scrollbar; never scroll sideways because of it */
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "NewCM10", "CMU Serif", "Latin Modern Roman", "STIX Two Text", Georgia, serif;
+  line-height: 1.27;  /* amsart 11pt: 13pt / 10.95pt = 1.19; a little more for screens */
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: var(--url); text-decoration: none; }
+a:hover, a:focus-visible { text-decoration: underline; text-underline-offset: 0.15em; }
+a.ref { color: var(--ref); }
+.nobr { white-space: nowrap; }
+.cite, .cite a { color: var(--cite); }
+.cite { white-space: nowrap; font-style: normal; }
+
+[id] { scroll-margin-top: 1.5rem; }
+
+::selection { background: var(--selection); color: var(--fg); }
+
+/* page scrollbar: a wide, square thumb in the text color.
+   Chrome/Safari/Edge take the width from ::-webkit-scrollbar (and ignore it if
+   scrollbar-color is set); Firefox only has scrollbar-color, with its widest bar. */
+::-webkit-scrollbar { width: 16px; height: 16px; background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--fg); border-radius: 0; border: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+::-webkit-scrollbar-corner { background: var(--bg); }
+@supports (-moz-appearance: none) {  /* Firefox only */
+  html { scrollbar-color: var(--fg) var(--bg); scrollbar-width: auto; }
+}

@@ -20,6 +20,7 @@ buttons, sliders, readouts, and the caption, which is a margin note on wide scre
 .applet canvas.applet-stage.is-3d:active { cursor: grabbing; }
 .applet-2d { cursor: pointer; }
 .applet-tree, .applet-plane { cursor: pointer; }
+.applet-f { cursor: crosshair; }
 .applet-levels { font-variant: small-caps; letter-spacing: 0.04em; }
 /* variables in readouts written at run time, in the math font */
 .applet .mi { font-family: KaTeX_Math, serif; font-style: italic; }

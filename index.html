@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <p>If you have any comments or corrections,<br>please contact the author at:</p>
         <p class="contact">David Muñoz-Lahoz<br><span class="nowrap">&lt;david [dot] munnozl [at]
           uam [dot] es&gt;</span></p>
+        <p class="project">This digestion is part of <a href="https://bourgain-pedia.com" target="_blank" rel="noopener">The Bourgain Project</a>.</p>
       </div>
       <!-- the chevrons: one from the title down to the note, one from the note down to the paper -->
       <a class="scroll-cue cue-title" href="#disclaimer" aria-label="Scroll down to the note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></a>
@@ -312,7 +313,9 @@ document.addEventListener('DOMContentLoaded', function () {
       \(X\) has the <em>Radon–Nikodým property</em> (RNP) if for every finite measure space
       \((\Omega, \Sigma, \mu)\) and every \(\mu\)-continuous vector measure
       \(F \colon \Sigma \to X\) of bounded variation there exists \(f \in L_1(\mu; X)\) such that
-      \[F(A) = \int_A f \, d\mu \quad \text{for every } A \in \Sigma.\]</p>
+      \[F(A) = \int_A f \, d\mu \quad \text{for every } A \in \Sigma.\]
+      In this case, \(f\) is called the <em>density</em> or the <em>Radon–Nikodým derivative</em>
+      of \(F\) with respect to <span class="nobr">\(\mu\).</span></p>
   </div>
 
   <div class="thm thm-remark env-rem">
@@ -492,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <figcaption><span class="fig-name">Figure 1.</span> \(A\) is a set in the plane, chosen below;
       with <em>draw</em> you can trace your own. The blue region is the slice
       <span class="nobr">\(S(A,f,\alpha)\):</span> the points of \(A\) where \(f\) is larger than
-      <span class="nobr">\(M(A,f) - \alpha\),</span> and \(M(A,f)\) is reached at the marked point.
+      <span class="nobr">\(M(A,f) - \alpha\).</span> \(M(A,f)\) is reached at the marked point.
       The arrow is <span class="nobr">\(f\):</span> drag it to change
       <span class="nobr">\(f\),</span> and use the slider to change
       <span class="nobr">\(\alpha\).</span> On the right, the values of \(f\) are drawn as heights,
@@ -527,6 +530,8 @@ document.addEventListener('DOMContentLoaded', function () {
       such that
       \[x \in S(A, f, \alpha) \quad \text{and} \quad \operatorname{diam} S(A, f, \alpha) &lt; \varepsilon.\]</p>
   </div>
+
+  <p>Now for the promised geometric characterization of the RNP.</p>
 
   <div class="thm thm-plain env-thm">
     <p><span class="thm-head"><span class="thm-name">Theorem 2.11</span>
@@ -571,7 +576,7 @@ document.addEventListener('DOMContentLoaded', function () {
       Let \(\lambda = 1/\|f\|_1 \geq 1\) and
       <span class="nobr">\(u = \lambda f (\chi_{[0,c]} - \chi_{(c,1]})\),</span> and define
       \(g = f + u\) and <span class="nobr">\(h = f - u\).</span> Clearly \(f = (g + h)/2\) and
-      <span class="nobr">\(\|g - f\|_1 = \|h - f\|_1 = \|u\|_1 = \lambda \|f\|_1 = 1\).</span>
+      \[\|g - f\|_1 = \|h - f\|_1 = \|u\|_1 = \lambda \|f\|_1 = 1.\]
       Moreover,
       \[g = (1 + \lambda) f \chi_{[0,c]} + (1 - \lambda) f \chi_{(c,1]},\]
       so that
@@ -579,6 +584,45 @@ document.addEventListener('DOMContentLoaded', function () {
       and similarly <span class="nobr">\(\|h\|_1 = 1\).</span> By the previous theorem, \(L_1[0,1]\)
       does not have the RNP.</p>
   </div>
+
+  <figure class="applet" id="applet-l1">
+    <!-- The construction of Example 2.13 (script: src/js/l1ball.js; the caption is below the
+         figure). Left: f and the point c; right: g and h, with f dashed. -->
+    <div class="applet-views">
+      <canvas class="applet-f" role="img" aria-label="The graph of a function f in the unit ball of L1[0, 1], and the point c that splits the area under |f| into two halves. Drag on it to draw f."></canvas>
+      <canvas class="applet-gh" role="img" aria-label="The graphs of g = f + u and h = f - u, with f dashed in between."></canvas>
+    </div>
+    <div class="applet-controls">
+      <div class="applet-shapes" role="group" aria-label="The function f">
+        <button type="button" data-shape="wave" aria-pressed="true">wave</button>
+        <button type="button" data-shape="bump" aria-pressed="false">bump</button>
+        <button type="button" data-shape="ramp" aria-pressed="false">ramp</button>
+        <button type="button" data-shape="steps" aria-pressed="false">steps</button>
+      </div>
+      <label class="applet-alpha">\(\|f\|_1\)
+        <input type="range" min="0" max="1" step="0.01" value="0.6" aria-label="the norm of f"></label>
+    </div>
+    <div class="applet-readout" aria-live="polite">
+      <span>\(\|f\|_1\) = <span data-out="norm"></span></span>
+      <span>\(c\) = <span data-out="c"></span></span>
+      <span>\(\lambda\) = <span data-out="lambda"></span></span>
+      <span>\(\|g\|_1\) = <span data-out="g"></span></span>
+      <span>\(\|h\|_1\) = <span data-out="h"></span></span>
+      <span>\(\|u\|_1\) = <span data-out="u"></span></span>
+    </div>
+    <figcaption><span class="fig-name">Figure 2.</span> The construction of the previous example.
+      On the left, a function \(f\) in the unit ball of <span class="nobr">\(L_1[0,1]\),</span>
+      chosen below; drag on the graph to draw your own. The point \(c\) splits the area under
+      \(|f|\) into two halves, blue and orange, each of area
+      <span class="nobr">\(\|f\|_1/2\).</span> On the right, \(g = f + u\) and
+      <span class="nobr">\(h = f - u\),</span> with \(f\) dashed halfway between them: \(g\) is
+      \((1+\lambda) f\) on the blue half and \((1-\lambda) f\) on the orange one, and \(h\) the
+      other way around. Use the slider to change <span class="nobr">\(\|f\|_1\):</span> however
+      small it is, \(g\) and \(h\) stay on the unit sphere, at distance \(1\) from
+      <span class="nobr">\(f\).</span></figcaption>
+  </figure>
+
+  <script src="src/js/l1ball.js" defer></script>
 
   <div class="thm thm-plain env-example" id="ex:c0">
     <p><span class="thm-head"><span class="thm-name">Example 2.14</span>.</span> The unit ball
@@ -710,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="nobr">\(C\),</span> so <span class="nobr">\(x \notin \ext(C)\).</span></span>
       <span data-status="draw" hidden>Trace a curve: \(C\) will be its closed convex hull.</span>
     </div>
-    <figcaption><span class="fig-name">Figure 2.</span> Extreme points of convex sets \(C\) in the
+    <figcaption><span class="fig-name">Figure 3.</span> Extreme points of convex sets \(C\) in the
       plane and in space, marked in blue. Click a point \(x\) of \(C\) (in the plane, you can also
       drag it): if \(x\) is not extreme, it appears as the midpoint of two distinct points \(y\) and
       \(z\) of <span class="nobr">\(C\),</span> as in the previous remark. Choose <em>draw</em> to
@@ -1210,7 +1254,7 @@ document.addEventListener('DOMContentLoaded', function () {
     convex hulls, from its elements that are arbitrarily close to \(0\) in this weak sense, such as
     the spikes above. Ghoussoub and Talagrand were motivated by martingales: if a bounded closed
     convex set is not order dentable, one can build a martingale with values in it that is
-    hopelessly divergent, and so the RNP fails
+    divergent, and so the RNP fails
     <span class="cite">[<a href="#bib-ghoussoub_talagrand1979">10</a>, Lemma 2]</span>.</p>
 
   <div class="thm thm-definition env-defn">
@@ -1326,7 +1370,8 @@ document.addEventListener('DOMContentLoaded', function () {
   <p>Remember that the RNP always implies the KMP
     (<a class="ref" href="#thm:lindenstrauss">Theorem 3.4</a>). Hence the content of the theorem
     lies in the reverse implication. The first proof builds on
-    <a class="ref" href="#thm:bourgain">Theorem 2.17</a>.</p>
+    <a class="ref" href="#thm:bourgain">Theorem 2.17</a>. Don't worry if it feels too dense:
+    understanding this proof is not our main goal.</p>
 
   <div class="proof">
     <p><span class="proof-head">Proof 1.</span> Suppose that \(E\) is a Banach lattice with the
@@ -1347,11 +1392,11 @@ document.addEventListener('DOMContentLoaded', function () {
       is that, in a Banach lattice that does not contain <span class="nobr">\(c_0\),</span> every
       \(L_1\)-bounded martingale is the difference of two positive \(L_1\)-bounded martingales. One
       then uses the construction of <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span> in
-      <span class="nobr">\(E_+\).</span> However, these details would require a whole paper of their
+      <span class="nobr">\(E_+\).</span> However, these details would require a whole expository paper of their
       own, and since the goal of
       <span class="cite">[<a href="#bib-bourgain_talagrand1981">6</a>]</span> is to give a
       simplified proof using an order-theoretic approach, there is no point in delving deeper.</p>
-    <p>Granting this, it is not difficult to finish the proof. The set
+    <p>Granting that \(C\) is contained in <span class="nobr">\(E_+\),</span> it is not difficult to finish the proof. The set
       <span class="nobr">\(C\),</span> being closed and convex, is weakly closed by Mazur’s theorem.
       Since the weak topology of \(E\) is the same, by definition, as the weak\(^*\) topology of
       \(E^{* *}\) when restricted to <span class="nobr">\(E\),</span> it follows that
@@ -1370,8 +1415,8 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 
   <p>As we have seen, this proof relies heavily on the construction of
-    <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span>. However, according to the
-    authors,</p>
+    <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span>. According to the
+    authors:</p>
 
   <blockquote>
     <p>The techniques of <span class="cite">[<a href="#bib-bourgain1978">5</a>]</span> are, however,
@@ -1396,8 +1441,8 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 
   <div class="proof">
-    <p><span class="proof-head">Proof.</span> From the original proof: “We shall take pains to give
-      an elementary one.” Assume <span class="nobr">\(u\neq 0\),</span> for otherwise the result is
+    <p><span class="proof-head">Proof.</span> From the original paper: “We shall take pains to give
+      an elementary [proof].” Assume <span class="nobr">\(u\neq 0\),</span> for otherwise the result is
       trivial. The proof has the following steps:</p>
     <ol class="enum">
       <li>
@@ -1770,7 +1815,8 @@ document.addEventListener('DOMContentLoaded', function () {
       \(E\) has a quasi-interior point <span class="nobr">\(u \in E_+\),</span> which we fix from
       now on (the sets \(H_n\) are defined in terms of this <span class="nobr">\(u\)),</span> and
       that \(A \subseteq E_+\) is a closed bounded convex set with \(A \neq \{0\}\) which is not
-      order dentable. We will use <a class="ref" href="#lem:5">Lemma 5.6</a> to construct an
+      order dentable.</p>
+    <p>We will use <a class="ref" href="#lem:5">Lemma 5.6</a> to construct an
       increasing family of finite algebras \(\Sigma _n\) of <span class="nobr">\([0,1]\),</span> and
       \(\Sigma _n\)-measurable functions <span class="nobr">\(X_n\colon [0,1]\to A\),</span>
       <span class="nobr">\(f_n\colon [0,1]\to E^{*}\),</span> and
@@ -1895,7 +1941,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <span class="eq-anchor" id="eq:almost_conv_comb"></span>\[\big\| X_n(t) - \mathbb{E}_n(X_{n+1})(t) \big\| = \Big\| x_j - \sum_{i=1}^{p_j} \lambda_{ji} y_{ji} \Big\| &lt; 2^{-n-1}. \tag{1}\]
       This completes the construction.</p>
     <p>According to (d), \(X_n\) is not really a martingale with respect to the filtration
-      \((\Sigma _n)\)… but we can fix that by passing to an appropriate limit. But why do we even
+      <span class="nobr">\((\Sigma _n)\),</span> but we can fix that by passing to an appropriate limit. But why do we even
       want to get a martingale? Because, as <a class="ref" href="#eq:almost_conv_comb">(1)</a>
       shows, the conditional expectations are a way to keep track of convex combinations. Right now,
       (d) guarantees that \(X_n(t)\) is <em>almost</em> a convex combination of
@@ -1971,7 +2017,7 @@ document.addEventListener('DOMContentLoaded', function () {
           <input type="range" min="1" max="6" step="1" value="3"></label>
       </div>
       <div class="applet-readout" data-out="combination" aria-live="polite"></div>
-      <figcaption><span class="fig-name">Figure 3.</span> The tree of values of a martingale
+      <figcaption><span class="fig-name">Figure 4.</span> The tree of values of a martingale
         \((Y_n)\) with respect to a filtration <span class="nobr">\((\Sigma_n)\).</span> On the
         left, the atoms of \(\Sigma_0, \Sigma_1, \ldots\) split \([0,1]\) into smaller and smaller
         intervals; on the right, \(Y_n\) takes one value in \(A\) on each atom of
@@ -1997,24 +2043,24 @@ document.addEventListener('DOMContentLoaded', function () {
       particular, by (c), <span class="nobr">\(C_l\cap H_n=\emptyset\),</span> and
       <span class="nobr">\(x \not\in C_l\).</span></p>
     <p>We want to show that
-      <span class="nobr">\(C=\rawco\left( \bigcup_{l\le p} C_l \right)\).</span> This will follow
+      <span class="nobr">\(C=\rawco\big(\bigcup_{l\le p} C_l\big)\).</span> This will follow
       from a successive application of <a class="ref" href="#lem:3">Lemma 5.4</a> once we show that
-      \[C=\co\left( \bigcup_{l\le p} C_l \right).\]
+      \[C=\co\bigg(\bigcup_{l\le p} C_l\bigg).\]
       The non-trivial inclusion amounts to showing that \(Y_m(t)\) is in the right-hand side of the
       equation for every \(t \in [0,1]\) and every <span class="nobr">\(m \in \N\).</span> For
       \(m\ge n\) this is obvious. For <span class="nobr">\(m&lt;n\),</span> we have that
       <span class="nobr">\(Y_m(t)=\mathbb{E}_m(Y_n)(t)\),</span> which is a convex combination of
       the values of \(Y_n\) at the atoms in \(\Sigma _n\) that are descendants of the atom in
       \(\Sigma _m\) that contains <span class="nobr">\(t\).</span> Hence
-      <span class="nobr">\(Y_m(t) \in \rawco\left( \bigcup_{l\le p} C_l \right)\).</span> Thus
-      \(x \in C=\rawco\left( \bigcup_{l\le p} C_l \right)\) cannot be extreme, for if it were, it
+      <span class="nobr">\(Y_m(t) \in \rawco\big(\bigcup_{l\le p} C_l\big)\).</span> Thus
+      \(x \in C=\rawco\big(\bigcup_{l\le p} C_l\big)\) cannot be extreme, for if it were, it
       would belong to some <span class="nobr">\(C_l\),</span> which as we have already seen is not
       the case.</p>
     <p>In conclusion, \(C\) is a nonempty closed bounded convex subset of \(E_+\) that is not the
       closed convex hull of its extreme points. Using it, we can even construct a nonempty closed
       bounded convex subset of \(E_+\) that does not have extreme points. Indeed, use Bishop–Phelps
       to obtain a support functional \(f \in E^{*}\) of \(C\) with \(M(C,f)>0\) (as in the base step
-      of the construction); then \(D=\{\, x \in C : f(x)=M(C,f) \, \}\) is extremal in
+      of the construction); then \(D=\big\{\, x \in C : f(x)=M(C,f) \,\big\}\) is extremal in
       <span class="nobr">\(C\),</span> yet it does not contain <span class="nobr">\(0\),</span> so
       it does not have any extreme point.<span class="qed" aria-label="End of proof">□</span></p>
   </div>

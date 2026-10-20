@@ -130,6 +130,7 @@ the scrolling "stage" that cross-fades the two (driven by src/js/site.js). */
   font-style: normal;
   font-size: 0.9em;
 }
+.disclaimer .project { margin-top: 0.9em; }
 .disclaimer .nowrap { white-space: nowrap; }
 
 /* The stage: without JavaScript, the title and then the note, one below the other. With it,
